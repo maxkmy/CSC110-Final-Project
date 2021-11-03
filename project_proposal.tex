@@ -12,62 +12,172 @@
 \maketitle
 
 \section*{Problem Description and Research Question}
+Research conducted by economists shows the wealth gap widened during the industrial revolution (Rychbosh, 2015). Before the industrial revolution, the richest countries were 3 times as rich as the poorest countries. Today, this difference widens to more than 100-fold. The wealth gap deserves attention as poorer countries are more susceptible to social problems like poverty, terrorism and subpar living condition (Krieger, 2016; Cookson, 2020).  \\
 
-TODO: complete in google docs and change to latex
+\noindent Two ideas come to mind when considering how COVID-19 and the global wealth gap interact:
+
+\begin{enumerate}
+    \item COVID-19 has varying degrees of impact on different industries. For instance, in 2020, global tourism lost \$935 billion, a 10.5\% reduction compared to 2019’s revenue. Relatively, the impact on manufacturing sector is lesser where production declined 7\% globally in 2020 (Todorov, N/A).
+
+    Moreover, countries differ in economic structures. Using the three-sector model, the economies of developed nations are mostly made up of tertiary sector (services) and secondary sector (manufacturing), while undeveloped nations depend on secondary sector and primary sector (extraction and agriculture).
+
+    Thus, it is interesting to understand the magnitude of impact COVID-19 exerts on different nations of different economic structures.
+
+    \item Research shows 60\% of people in high-income countries receive a first dose vaccine while this number is only 1\% in low-income countries (Maxmen, 2021). This disparity is attributable to different levels of wealth and healthcare networks which affects countries’ ability to respond to COVID-19.
+
+    We predict that quicker response of wealthier nations resulted in less impact on their workforce and economy, thus widening the wealth gap. We hope to examine this prediction using datasets we find.
+\end{enumerate}
+
+\\
+\noindent The 2 ideas lead us to question  \textbf{how COVID-19 impacts the global wealth gap}. Since gross domestic product (GDP) is a widely accepted economic metric to measure a nation’s output and income, we will analyze GDP by sector, GDP and unemployment rate to assess the magnitude of impact COVID-19 exerts on countries of different stages of development (idea 1). We also consider non-economic metrics like death rate and vaccination rate to understand how nations’ varying capabilities to respond to COVID-19 influence their economic performance (idea 2).  \\
+
+\noindent Overall, these findings will help understand the impact COVID-19 exerts on countries from economic and social perspectives. The results may help policy makers at national and international levels (e.g. World Bank) better understand the vulnerability of economies of different nations. Appropriate recommendations can be made to reduce the wealth gap, thus better preparing for future pandemics.
+\newpage
+
+
+
+
+
+
+
+
 
 \section*{Dataset Description}
-TODO: fill in everything
 \begin{enumerate}
     \item \textbf{Mortality Data}
         \begin{enumerate}[(a)]
-            \item Source:
-            \item Format: CSV
-            \item Column Headers:
-            \item Dimensions:
-            \item Sample Data:
+            \item \textbf{Source}: World Happiness Report
+            \item \textbf{Format}: CSV
+            \item \textbf{Column Headers}: (Only relevant columns are listed) Country name, COVID-19 deaths per 100,000 population in 2020
+            \item \textbf{Dimensions}: 167 rows and 17 columns
+            \item \textbf{Additional Notes}: We will only be using the columns Country name and COVID-19 deaths per 100,000 population in 2020
         \end{enumerate}
     \item \textbf{Annual GDP}
         \begin{enumerate}[(a)]
-            \item Source: World Bank
-            \item Format: CSV
-            \item Column Headers: Country Name, 1960 GDP, 1961 GDP, …, 2019 GDP, 2020 GDP
-            \item Dimensions: 65 rows and 271 columns
-            \item Sample Data:
+            \item \textbf{Source}: World Bank
+            \item \textbf{Format}: CSV
+            \item \textbf{Column Headers}: Country Name, 1960 GDP, 1961 GDP, …, 2019 GDP, 2020 GDP
+            \item \textbf{Dimensions}: 271 rows and 65 columns
+            \item \textbf{Additional Notes}: Country Name, 2016 to 2020 GDP are the only columns needed.
         \end{enumerate}
-    \item \textbf{Country Characterization}
+    \item \textbf{Country Income Quartile}
         \begin{enumerate}[(a)]
-            \item Source: World Bank
-            \item Format: CSV
-            \item Column Headers: Country Code, Region, Income Group, Special Notes
-            \item Dimensions: 266 rows and 4 columns
-            \item Sample Data:
+            \item \textbf{Source}: World Bank
+            \item \textbf{Format}: CSV
+            \item \textbf{Column Headers}: Country Code, Region, Income Group, Special Notes
+            \item \textbf{Dimensions}: 266 rows and 4 columns
+            \item \textbf{Additional Notes}: Income group is separated into 4 quartiles (high, upper middle, lower middle, low)
         \end{enumerate}
     \item \textbf{GDP By Sector}
         \begin{enumerate}[(a)]
-            \item Source: World Bank
-            \item Format: CSV
-            \item Column Headers: Country Name, Country Code, Manufacturing 2016, Service 2016, Industry 2016, Agriculture, forestry and fishing 2016, [same format for 2017, 2018, 2019, 2020]
-            \item Dimensions: 272 rows and 22 columns
-            \item Sample Data:
+            \item \textbf{Source}: World Bank
+            \item \textbf{Format}: CSV
+            \item \textbf{Column Headers}: Country Name, Country Code, Manufacturing 2016, Service 2016, Industry 2016, Agriculture, forestry and fishing 2016 (same format for 2017, 2018, 2019, 2020)
+            \item \textbf{Dimensions}: 272 rows and 22 columns
+            \item \textbf{Additional Notes}: All columns will be used except for Country Code
         \end{enumerate}
-    \item \textbf{Able Workers}
+    \item \textbf{Unemployment Rate}
         \begin{enumerate}[(a)]
-            \item Source:
-            \item Format:
-            \item Column Headers:
-            \item Dimensions:
-            \item Sample Data:
+            \item \textbf{Source}: World Bank
+            \item \textbf{Format}: CSV
+            \item \textbf{Column Headers}: Country Name, Country Code, Indicator Name, Indicator Code, 1960 Unemployment as a \% of Workforce, 1961 Unemployment as \% of Workforce, ..., 2019 Unemployment as \% of Workforce, 2020 Unemployment as \% of Workforce
+            \item \textbf{Dimensions}: 271 rows and 65 columns
+            \item \textbf{Additional Notes}: Country Name, 2016 to 2020 Unemployment as \% of Workforce are the only columns needed.
         \end{enumerate}
 \end{enumerate}
 
+
+
+
+
+
+
+
+
 \section*{Computational Plan}
     \subsection*{Data Processing}
-    TODO
-    \subsection*{Required Libraries}
-    TODO
-    \subsection*{Computation By Metrics}
-    TODO
+    The data needed for the computations are found within separate CSV files. To make the data more uniform and make the code more readable and reusable, the data needs to be bundled together and transformed into attributes of class instances. \\
 
+    \noindent First, a Country class needs to be defined  with the following attributes:  country name, 2016 - 2020 GDP, 2016 - 2020 GDP by sector, country income quartile, unemployment rate, death rate and vaccination rate. \\
+
+    \noindent Then, a dictionary can be initialized that maps the name of each country to its respective Country instance (that will be initialized with None attributes). With the dictionary filled with key-value pairs, the necessary fields can be extracted from each CSV files and assigned to the appropriate Country instance’s attributes. \\
+
+    \noindent Through this transformation, the dictionary will map the name of each country to a Country instance containing the properties we need to access for future computations. \\
+
+
+
+
+
+
+
+    \subsection*{Required Libraries}
+    \begin{enumerate}
+        \item \textbf{Plotly}
+        \begin{enumerate}[(a)]
+            \item \textbf{Description}: Plotly is a library that plots data onto interactive graphs.
+            \item \textbf{Usage}: Plotly will be used to visualize the data and trends we observe. In particular, it will be used to plot line graphs for chronological data, bar charts for qualitative data and scatter plots and trendlines to verify relationship between metrics.
+        \end{enumerate}
+        \item \textbf{Geopandas}
+        \begin{enumerate}[(a)]
+            \item \textbf{Description}: Geopandas is a library that helps work with geospatial data.
+            \item \textbf{Usage}: Geopandas will be use to plot choropleth maps which are coloured maps where the colour is determined by a numeric value.
+       \end{enumerate}
+    \end{enumerate}
+
+
+
+
+
+
+
+
+    \subsection*{Computation By Metrics}
+    \begin{enumerate}
+        \item \textbf{GDP \% Change}
+            \begin{enumerate}[(a)]
+                \item \textbf{Formula}: GDP \% Change in Year n $= \frac{GDP_{n}-GDP_{n-1}}{GDP_{n-1}}$
+                \item \textbf{Computation}: Iterate over all countries in the dictionary produced from data processing and apply the formula for years adjacent years from 2016 to 2020.
+                \item \textbf{Visualization}: The \% change in GDP by year can be visualized using chloropleth maps for each year (e.g. dark green representing high GDP growth and dark red representing high GDP decline) using \texttt{Geopandas}. To better understand changes over time, the GDP \% Change can be plotted as line graphs (to check of increasing or decreasing trends) using \texttt{Plotly}.
+            \end{enumerate}
+
+        \item \textbf{GDP as a \% of Global GDP}
+            \begin{enumerate}[(a)]
+                \item \textbf{Formula}: GDP of country as \% of Global GDP $= \frac{GDP_{country}}{GDP_{global}}$
+                \item \textbf{Computation}: Iterate over all countries in the dictionary produced from data processing and accumulated global GDP for specific years from 2016 to 2020. Then, iterate through all the countries in the dictionary again to calculate the country's GDP that year with respect to the accumulated global GDP.
+                \item \textbf{Visualization}:The GDP as \% of Global GDP can be visualized using bar charts and chloropleth maps for each year. For bar charts from \texttt{MatPlotLib} change can be represented by using values +ve to represent growth through years and -ve to represent decline through the years in relation to a country. For chloropleth maps by \texttt{Geopandas}, darkness of colour can represent change throughout years (e.g dark green representing a growth in GDP \% to Global GDP).
+            \end{enumerate}
+
+        \item \textbf{GDP by Sector as a \% of National GDP}
+            \begin{enumerate}[(a)]
+                \item \textbf{Formula}: GDP of Sector as \% of National GDP $= \frac{GDP_{{sector}}}{GDP_{country}}$
+                \item \textbf{Computation}: Iterate over all countries, all sectors, and all years in dictionary produced from data processing and calculate GDP of sector as \% of national GDP by using \textbf{Formula} based on the data for $GDP_{sector}$ based on desired sector and $GDP_{nation}$ of that corresponding year.
+                \item \textbf{Visualization}: The GDP by Sector as a \% of National GDP can be visualized using chloropleth maps for each year by \texttt{Geopandas}. Darkness of colour can represent the change in sector GDP \% of national GDP (e.g dark colours represent growth while light colours represent a decline).
+            \end{enumerate}
+        \item Unemployment Rate \% Change
+            \begin{enumerate}[(a)]
+                \item \textbf{Formula}: Unemployment \% Change in Year n $= \frac{Unemployment \ Rate_{n}-\  Unemployment \ Rate_{n-1}}{Unemployment \ Rate_{n-1}}$
+                \item \textbf{Computation}: Iterate over all countries in the dictionary produced from data processing and calculate percent change of unemployment rate by each year (e.g 2016-2017, 2017-2018, 2018-2019, 2019-2020).
+                \item \textbf{Visualization}: The \% change in unemployment rate by year can be visualized using chloropleth maps for each year (e.g. dark green representing higher employment and dark red representing higher unemployment) using \texttt{Geopandas}. To better understand changes over time, the GDP \% Change can be plotted as line graphs (to check of increasing or decreasing trends) using \texttt{Plotly}.
+            \end{enumerate}
+        \item Sector Value Added as a \% of Global GDP
+            \begin{enumerate}[(a)]
+                \item \textbf{Formula}: Sector value added as \% of Global GDP $= \frac{Aggregated \ Global \ Sector \ Value \ Added}{Global \ GDP}$
+                \item \textbf{Computation}: Aggregate national GDP to calculate the global GDP and aggregate the sector value added for each nation to calculate global sector value added. Then, find the sector value added as \% of global GDP by dividing the global sector value added by the global GDP.
+                \item \textbf{Visualization}: Divide a bar graph into the four sectors (manufacturing, service, industry, and agriculture, forestry and fishing) then plot the percentage of global GDP each sector is responsible for by country income quartiles (high, upper-middle, lower-middle, and low).
+            \end{enumerate}
+        \item
+            \begin{enumerate}[(a)]
+                \item \textbf{Formula}:
+                \item \textbf{Computation}:
+                \item \textbf{Visualization}:
+            \end{enumerate}
+        \item Vaccination Rate Placeholder
+            \begin{enumerate}[(a)]
+                \item \textbf{Formula}:
+                \item \textbf{Computation}:
+                \item \textbf{Visualization}:
+            \end{enumerate}
+    \end{enumerate}
 \section*{References}
 TODO: make a reference list by Thursday
 
