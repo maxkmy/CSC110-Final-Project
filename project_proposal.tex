@@ -13,14 +13,12 @@
 
 \section*{Problem Description and Research Question}
 Research conducted by economists shows the wealth gap widened during the industrial revolution (Rychbosh, 2015). Before the industrial revolution, the richest countries were 3 times as rich as the poorest countries. Today, this difference widens to more than 100-fold. The wealth gap deserves attention as poorer countries are more susceptible to social problems like poverty, terrorism and subpar living condition (Krieger, 2016; Cookson, 2020).
-% TODO: in-text citation for last line might change
-% due to formatting or Kevin potentially not finding the original link
 \\
 
 \noindent Two ideas come to mind when considering how COVID-19 and the global wealth gap interact:
 
 \begin{enumerate}
-    \item COVID-19 has varying degrees of impact on different industries. For instance, in 2020, global tourism lost \$935 billion, a 10.5\% reduction compared to 2019’s revenue. Relatively, the impact on manufacturing sector is lesser where production declined 7\% globally in 2020 (Todorov, N/A).
+    \item COVID-19 has varying degrees of impact on different industries. For instance, in 2020, global tourism lost \$935 billion, a 10.5\% reduction compared to 2019’s revenue (Madden, 2021). Relatively, the impact on manufacturing sector is lesser where production declined 7\% globally in 2020 (Todorov, 2020).
 
     Moreover, countries differ in economic structures. Using the three-sector model, the economies of developed nations are mostly made up of tertiary sector (services) and secondary sector (manufacturing), while undeveloped nations depend on secondary sector and primary sector (extraction and agriculture).
 
@@ -51,7 +49,7 @@ Research conducted by economists shows the wealth gap widened during the industr
         \begin{enumerate}[(a)]
             \item \textbf{Source}: World Bank
             \item \textbf{Format}: CSV
-            \item \textbf{Relevant Column Headers}: Country Name, 1960 GDP, 1961 GDP, …, 2019 GDP, 2020 GDP
+            \item \textbf{Relevant Column Headers}: Country Name, 2016 GDP, 2017 GDP, 2018 GDP, 2019 GDP, 2020 GDP
             \item \textbf{Dimensions}: 271 rows and 65 columns
             \item \textbf{Additional Notes}: None
         \end{enumerate}
@@ -91,86 +89,76 @@ Research conducted by economists shows the wealth gap widened during the industr
 
 \section*{Computational Plan}
     \subsection*{Data Processing}
-    The data needed for the computations are found within separate CSV files. To make the data more uniform and make the code more readable, the data needs to be bundled together and transformed into attributes of class instances. \\
-
-    %TODO: mainly a question for Kai, are we missing any attributes?
-    \noindent First, a Country class needs to be defined  with the following attributes:  country name, 2016 - 2020 GDP, 2016 - 2020 GDP by sector, country income quartile, unemployment rate, death rate and vaccination rate. \\
-
-    \noindent Then, a dictionary can be initialized that maps the name of each country to its respective Country instance (that will be initialized with None attributes). With the dictionary filled with key-value pairs, the necessary fields can be extracted from each CSV files and assigned to the appropriate Country instance’s attributes. \\
-
-    \noindent Through this transformation, the dictionary will map the name of each country to a Country instance containing the properties needed to be accessed for computations. We refer to this dictionary as \texttt{country\_dict} in \texttt{Computation By Metrics}.\\
+    \begin{enumerate}
+        \item Create a \texttt{Country} class that bundles data in different CSV files together. Instance attributes include country, 2016 - 2020 GDP, 2016 - 2020 GDP by sector, income quartile, unemployment rate, death rate and vaccination rate.
+        \item Create a dictionary that maps a country name to a \texttt{Country} instance with attributes initialized as \texttt{None}.
+        \item Extract necessary fields from each CSV file and assign them to appropriate instance attributes.
+        \item The dictionary now maps a country's name to its \texttt{Country} instance containing the attributes required for computation. We refer to this dictionary as \texttt{country\_dict}.
+    \end{enumerate}
 
     \subsection*{Required Libraries}
     \begin{enumerate}
-        \item \textbf{Plotly}: Plotly is a library that plots data into interactive graphs. Plotly will be used to visualize the data and trends through line graphs for chronological data, bar charts for qualitative data and scatter plots and trendlines to verify relationship between metrics.
-        \item \textbf{Geopandas}: Geopandas is a library that helps work with geospatial data. Geopandas will be use to plot choropleth maps which are coloured maps where the colour of a country is determined by a numeric value.
+        \item \textbf{Plotly}: Plotly plots data into interactive graphs. Plotly will be used to plot line graphs for chronological data, bar charts for qualitative data and scatter plots and trendlines to verify metrics' correlation.
+        \item \textbf{Geopandas}: Geopandas helps work with geospatial data. Geopandas will be used to plot choropleth maps which are coloured maps where the colour of a country is determined by a numeric value.
     \end{enumerate}
 
     \subsection*{Computation By Metrics}
     \begin{enumerate}
         \item \textbf{GDP \% Change}
             \begin{enumerate}[(a)]
-                \item \textbf{Formula}: GDP \% Change in Year n $= \frac{\text{GDP}_{n} \ - \ \text{GDP}_{n-1}}{\text{GDP}_{n-1}}$
+                \item \textbf{Formula}: Year $n$ GDP \% Change $= \frac{\text{GDP}_{n} \ - \ \text{GDP}_{n-1}}{\text{GDP}_{n-1}}$
                 \item \textbf{Computation}: For years 2016 to 2020, iterate over all countries in \texttt{country\_dict} and apply the formula for pairs of consecutive years.
-                \item \textbf{Visualization}: Generate a chloropleth map from \% change in GDP by year (e.g. dark green represents high GDP growth; dark red represents high GDP deline) using \texttt{Geopandas}. Plot GDP \% change over time as line graphs to see trends using \texttt{Plotly}.
+                \item \textbf{Visualization}: Generate a chloropleth map from \% change in GDP by year (e.g. green represents high GDP growth) using \texttt{Geopandas}. Plot GDP \% change over time as line graphs using \texttt{Plotly}.
             \end{enumerate}
 
         \item \textbf{GDP as a \% of Global GDP}
             \begin{enumerate}[(a)]
-                \item \textbf{Formula}: GDP of country as \% of Global GDP $= \frac{\text{National GDP}}{\text{Global GDP}}$
-                \item \textbf{Computation}: For years 2016 to 2020, iterate over all countries in \texttt{country\_dict} to accumulate their GDP to find global GDP. Then, iterate through all the countries in \texttt{country\_dict} again to use the country's GDP in the given year and the aggregated global GDP and apply the formula.
+                \item \textbf{Formula}: GDP of Country as \% of Global GDP $= \frac{\text{National GDP}}{\text{Global GDP}}$
+                \item \textbf{Computation}: For years 2016 to 2020, iterate over countries in \texttt{country\_dict} to aggregate GDP to find global GDP. Iterate through all the countries in \texttt{country\_dict} again to use the country's GDP and the global GDP and apply the formula.
                 \item \textbf{Visualization}: Similar to \texttt{GDP \% Change}
             \end{enumerate}
-
-        \item \textbf{GDP by Sector as a \% of National GDP}
+        \item \textbf{Unemployment Rate \% Change}
             \begin{enumerate}[(a)]
-                \item \textbf{Formula}: GDP of Sector as \% of National GDP $= \frac{\text{Sector GDP}}{\text{National GDP}}$
-                \item \textbf{Computation}: For years 2016 to 2020, iterate over all countries in \texttt{country\_dict} and all sectors and calculate GDP of sector as \% of national GDP by using the formula based on the corresponding year.
-                \item \textbf{Visualization}: Similar to \texttt{GDP \% Change}.
-            \end{enumerate}
-        \item Unemployment Rate \% Change
-            \begin{enumerate}[(a)]
-                \item \textbf{Formula}: Unemployment \% Change in Year n $= \frac{\text{Unemployment \ Rate}_{n}-\  \text{Unemployment \ Rate}_{n-1}}{\text{Unemployment \ Rate}_{n-1}}$
+                \item \textbf{Formula}: Year $n$ Unemployment Rate \% Change $= \frac{\text{Unemployment \ Rate}_{n}-\  \text{Unemployment \ Rate}_{n-1}}{\text{Unemployment \ Rate}_{n-1}}$
                 \item \textbf{Computation}: Iterate over all countries in \texttt{country\_dict} and apply the formula for pairs of consecutive years from 2016 to 2020.
                 \item \textbf{Visualization}: Similar to \texttt{GDP \% Change}.
             \end{enumerate}
-        \item Sector GDP as a \% of Global GDP Grouped by National Income Quartile
+        \item \textbf{Sector GDP as a \% of Global GDP Grouped by National Income Quartile}
             \begin{enumerate}[(a)]
-                \item \textbf{Formula}: Sector value added as \% of Global GDP $= \frac{\text{Aggregated \ Global \ Sector \ Value \ Added \ for \ Quartile}}{\text{Global \ GDP}}$
-                \item \textbf{Computation}: For years 2016 to 2020, iterate over \texttt{country\_dict} and accumulate national GDP of all countries to calculate the global GDP and accumulate the sector value added for the nations in the desired quartile to calculate global sector value added for quartile. Then, apply the formula with the values calculated.
-                \item \textbf{Visualization}: Generate a bar graph using \texttt{Plotly} and divide it into the four sectors (manufacturing, service, industry, and agriculture, forestry and fishing). For each sector, plot the percentage of global GDP each sector is responsible for by country income quartiles (high, upper-middle, lower-middle, and low).
+                \item \textbf{Formula}: Sector GDP as \% of Global GDP $= \frac{\text{Aggregated \ Global \ Sector \ GDP}}{\text{Global \ GDP}}$
+                \item \textbf{Computation}: Iterate over \texttt{country\_dict} and accumulate national GDP of all countries to calculate global GDP. Accumulate sector GDP for nations in the desired quartile to calculate global sector GDP. Apply the formula with the values calculated.
+                \item \textbf{Visualization}: Generate a bar chart using \texttt{Plotly} for the four sectors (from dataset). For each sector, plot \% of global GDP each sector is responsible for by income quartile.
             \end{enumerate}
-        \item COVID-19 related deaths as a predictor of National GDP
+
+\newpage
+        \item \textbf{COVID-19 related deaths as a predictor of National GDP}
             \begin{enumerate}[(a)]
-                \item \textbf{Formula}: National GDP = $\beta_{0} + \beta_{1} \times$ COVID-19 deaths per 100,000 population in 2020 $+ \  \epsilon_{i}$
-                \item \textbf{Computation}: Using linear regression, compute the fitted linear regression line and the regression coefficients to determine an equation that  predicts National GDP given the COVID-19 deaths per 100,000 population in 2020 of a country.
-                \item \textbf{Visualization}: Create a scatter plot with each point being a single country on an x-axis of COVID-19 deaths per 100,000 population in 2020 and a y-axis of National GDP and plot the fitted linear regression line using \texttt{Plotly}.
+                \item \textbf{Formula}: GDP = $\beta_{0} + \beta_{1} \times$ COVID-19 deaths per 100,000 population in 2020 $+ \  \epsilon_{i}$
+                \item \textbf{Computation}: Using linear regression, compute the fitted linear regression line and regression coefficients to determine an equation that predicts national GDP given the COVID-19 deaths per 100,000 population in 2020 of a country.
+                \item \textbf{Visualization}: Create a scatter plot with each point being a country on an x-axis of COVID-19 deaths per 100,000 population in 2020 and a y-axis of National GDP and plot the fitted linear regression line using \texttt{Plotly}.
             \end{enumerate}
-        \item Total Vaccinations as a Percentage of the Population as a predictor of National GDP
+        \item \textbf{Total Vaccinations as a Percentage of the Population as a predictor of National GDP}
             \begin{enumerate}[(a)]
-                \item \textbf{Formula}: National GDP = $\beta_{0} + \beta_{1} \times$ Total Vaccinations as a Percentage of the Population $+ \ \epsilon_{i}$
-                \item \textbf{Computation}: Similar to COVID-19 related deaths as a predictor of National GDP
-                \item \textbf{Visualization}: Similar to COVID-19 related deaths as a predictor of National GDP
+                \item \textbf{Formula}: GDP = $\beta_{0} + \beta_{1} \times$ Total Vaccinations as a Percentage of the Population $+ \ \epsilon_{i}$
+                \item \textbf{Computation}: Similar to \texttt{COVID-19 related deaths as a predictor of National GDP}
+                \item \textbf{Visualization}: Similar to \texttt{COVID-19 related deaths as a predictor of National GDP}
             \end{enumerate}
     \end{enumerate}
 \newpage
 \begin{center}
 \section*{References}
 \end{center}
-    \item GDP (current US\$). (n.d.). Retrieved from https://data.worldbank.org/indicator/NY.GDP.MKTP.CD?view=chart\\
-    \item Global Inequality. (2021, July 08). Retrieved from https://inequality.org/facts/global-inequality/ \\
-    \item Global manufacturing production drops sharply due to economic disruptions caused by COVID-19 – UNIDO report. (n.d.). Retrieved from https://www.unido.org/news/global-manufacturing-production-drops-sharply-due-economic-disruptions-caused-covid-19-unido-report \\
-    \item Haseltine, W. A. (2021, March 24). What Can We Learn From Australia's Covid-19 Response? Retrieved from $https://www.forbes.com/sites/williamhaseltine/2021/03/24/what-can-we-learn-from-australias-covid-19-response/?sh=192a771b3a01$ \\
-    \item Krieger, T., & Meierrieks, D. (2016, March). Does Income Inequality Lead to Terrorism? (Rep. No. 5821). Retrieved https://www.ifo.de/DocDL/cesifo1\_wp5821.pdf \\
-    \item Suneson, G. (2020, March 21). Industries hit hardest by coronavirus in the US include retail, transportation, and travel. Retrieved from https://www.usatoday.com/story/money/2020/03/20/us-industries-being-devastated-by-the-coronavirus-travel-hotels-food/111431804/ \\
-    \item Taplin, N. (2021, March 09). Why China Worries About Losing Manufacturing. Retrieved from https://www.wsj.com/\\articles/why-china-worries-about-losing-manufacturing-11615275559 \\
-    \item World Development Indicators. (n.d.). Retrieved from https://databank.worldbank.org/source/world-development-indicators?l=en# \\
 
+    \item All Countries and Economies GDP (current US\$). World Bank Open Data . (2020). Retrieved November 4, 2021, from https://data.worldbank.org/indicator/NY.GDP.MKTP.CD?view=chart.  \\
+    \item Development Indicators. World Bank DataBank. (2021, October 28). Retrieved November 4, 2021, from \\ https://databank.worldbank.org/source/world-development-indicators?l=en. \\
+    \item Krieger, T.,  Meierrieks, D. (2016, March).  Does Income Inequality Lead to Terrorism?  (Rep.  No.  5821).  Retrieved from https://www.ifo.de/DocDL/cesifo1wp5821.pdf \\
+    \item Madden, D. (2021, January 14). The COVID-19 pandemic has cost the global tourism industry \$935 billion. Forbes. Retrieved November 4, 2021, from https://www.forbes.com/sites/duncanmadden/2021/01/14/the-covid-19-pandemic-has-cost-the-global-tourism-industry-935-billion/?sh=1de6c2077d40. \\
+    \item Ritchie, H., Mathieu, E., Rodés-Guirao, L., Appel, C., Giattino, C., Ortiz-Ospina, E., Hasell, J., Macdonald, B., Beltekian, D., &amp; Roser, M. (2020, March 5). Coronavirus (COVID-19) vaccinations - statistics and research. Our World in Data. Retrieved November 4, 2021, from https://ourworldindata.org/covid-vaccinations. \\
+    \item Ryckbosch, W. (2015, September 25). Economic inequality and growth before the industrial revolution: the case of the Low Countries (fourteenth to nineteenth centuries). Oxford Academic. Retrieved November 4, 2021, from https://academic.oup.com/ereh/article/20/1/1/2465267. \\
+    \item The Economist Newspaper. (2021, August 30). Vaccine inequality will cost money as well as lives. The Economist. Retrieved November 4, 2021, from https://www.economist.com/graphic-detail/2021/08/30/vaccine-inequality-will-cost-money-as-well-as-lives. \\
+    \item Todorov, V. (2020, June 3). Global manufacturing production drops sharply due to economic disruptions caused by covid-19 – UNIDO report. UNIDO. Retrieved November 4, 2021, from https://www.unido.org/news/global-manufacturing-production-drops-sharply-due-economic-disruptions-caused-covid-19-unido-report. \\
+    \item Understanding Poverty. World Bank. (2021, October 14). Retrieved November 4, 2021, from \\ https://www.worldbank.org/en/topic/poverty/overview#1. \\
+    \item Unemployment, total (\% of total labor force) (modeled ILO estimate). World Bank Open Data. (2020). Retrieved November 4, 2021, from https://data.worldbank.org/indicator/SL.UEM.TOTL.ZS. \\
 
-
-% NOTE: LaTeX does have a built-in way of generating references automatically,
-% but it's a bit tricky to use so we STRONGLY recommend writing your references
-% manually, using a standard academic format like APA or MLA.
-% (E.g., https://owl.purdue.edu/owl/research_and_citation/apa_style/apa_formatting_and_style_guide/general_format.html)
 
 \end{document}
