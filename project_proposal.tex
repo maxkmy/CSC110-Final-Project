@@ -126,11 +126,12 @@ Research conducted by economists shows the wealth gap widened during the industr
         \item \textbf{Sector GDP as a \% of Global GDP Grouped by National Income Quartile}
             \begin{enumerate}[(a)]
                 \item \textbf{Formula}: Sector GDP as \% of Global GDP $= \frac{\text{Aggregated \ Global \ Sector \ GDP}}{\text{Global \ GDP}}$
-                \item \textbf{Computation}: Iterate over \texttt{country\_dict} and accumulate national GDP of all countries to calculate global GDP. Accumulate sector GDP for nations in the desired quartile to calculate global sector GDP. Apply the formula with the values calculated.
+                \item \textbf{Computation}: Iterate over \texttt{country\_dict} and aggregate national GDP of all countries to calculate global GDP. Aggregate sector GDP for nations in the desired quartile to calculate global sector GDP. Apply the formula with the values calculated.
                 \item \textbf{Visualization}: Generate a bar chart using \texttt{Plotly} for the four sectors (from dataset). For each sector, plot \% of global GDP each sector is responsible for by income quartile.
             \end{enumerate}
 
-\newpage
+        \newpage
+
         \item \textbf{COVID-19 related deaths as a predictor of National GDP}
             \begin{enumerate}[(a)]
                 \item \textbf{Formula}: GDP = $\beta_{0} + \beta_{1} \times$ COVID-19 deaths per 100,000 population in 2020 $+ \  \epsilon_{i}$
@@ -159,6 +160,4 @@ Research conducted by economists shows the wealth gap widened during the industr
     \item Todorov, V. (2020, June 3). Global manufacturing production drops sharply due to economic disruptions caused by covid-19 – UNIDO report. UNIDO. Retrieved November 4, 2021, from https://www.unido.org/news/global-manufacturing-production-drops-sharply-due-economic-disruptions-caused-covid-19-unido-report. \\
     \item Understanding Poverty. World Bank. (2021, October 14). Retrieved November 4, 2021, from \\ https://www.worldbank.org/en/topic/poverty/overview#1. \\
     \item Unemployment, total (\% of total labor force) (modeled ILO estimate). World Bank Open Data. (2020). Retrieved November 4, 2021, from https://data.worldbank.org/indicator/SL.UEM.TOTL.ZS. \\
-
-
 \end{document}
