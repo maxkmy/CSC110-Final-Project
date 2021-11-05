@@ -37,12 +37,12 @@ Research conducted by economists shows the wealth gap widened during the industr
 
 \section*{Dataset Description}
 \begin{enumerate}
-    \item \textbf{Mortality Data}
+    \item \textbf{Mortality}
         \begin{enumerate}[(a)]
             \item \textbf{Source}: World Happiness Report
-            \item \textbf{Format}: xlsx
+            \item \textbf{Format}: CSV
             \item \textbf{Relevant Column Headers}: Country name, COVID-19 deaths per 100,000 population in 2020
-            \item \textbf{Dimensions}: 167 rows and 17 columns
+            \item \textbf{Dimensions}: 167 rows and 4 columns
             \item \textbf{Additional Notes}: None
         \end{enumerate}
     \item \textbf{Annual GDP}
@@ -58,8 +58,8 @@ Research conducted by economists shows the wealth gap widened during the industr
             \item \textbf{Source}: World Bank
             \item \textbf{Format}: CSV
             \item \textbf{Relevant Column Headers}: Country Code, Income Group
-            \item \textbf{Dimensions}: 266 rows and 4 columns
-            \item \textbf{Additional Notes}: Income group is separated into 4 quartiles (high, upper middle, lower middle, low)
+            \item \textbf{Dimensions}: 273 rows and 4 columns
+            \item \textbf{Additional Notes}: Income group is separated into 4 quartiles (high, upper middle, lower middle, low).
         \end{enumerate}
     \item \textbf{GDP By Sector}
         \begin{enumerate}[(a)]
@@ -90,7 +90,7 @@ Research conducted by economists shows the wealth gap widened during the industr
 \section*{Computational Plan}
     \subsection*{Data Processing}
     \begin{enumerate}
-        \item Create a \texttt{Country} class that bundles data in different CSV files together. Instance attributes include country, 2016 - 2020 GDP, 2016 - 2020 GDP by sector, income quartile, unemployment rate, death rate and vaccination rate.
+        \item Create a \texttt{Country} class that bundles data in different CSV files together. Instance attributes include country, 2016 - 2020 GDP, 2016 - 2020 GDP by sector, income quartile, unemployment rate, COVID-19 death rate and vaccination rate.
         \item Create a dictionary that maps a country name to a \texttt{Country} instance with attributes initialized as \texttt{None}.
         \item Extract necessary fields from each CSV file and assign them to appropriate instance attributes.
         \item The dictionary now maps a country's name to its \texttt{Country} instance containing the attributes required for computation. We refer to this dictionary as \texttt{country\_dict}.
@@ -106,28 +106,28 @@ Research conducted by economists shows the wealth gap widened during the industr
     \begin{enumerate}
         \item \textbf{GDP \% Change}
             \begin{enumerate}[(a)]
-                \item \textbf{Formula}: Year $n$ GDP \% Change $= \frac{\text{GDP}_{n} \ - \ \text{GDP}_{n-1}}{\text{GDP}_{n-1}}$
+                \item \textbf{Formula}: Year $n$ GDP \% Change $= \frac{\text{GDP}_{n} \ - \ \text{GDP}_{n-1}}{\text{GDP}_{n-1}} \times 100$
                 \item \textbf{Computation}: For years 2016 to 2020, iterate over all countries in \texttt{country\_dict} and apply the formula for pairs of consecutive years.
                 \item \textbf{Visualization}: Generate a chloropleth map from \% change in GDP by year (e.g. green represents high GDP growth) using \texttt{Geopandas}. Plot GDP \% change over time as line graphs using \texttt{Plotly}.
             \end{enumerate}
 
         \item \textbf{GDP as a \% of Global GDP}
             \begin{enumerate}[(a)]
-                \item \textbf{Formula}: GDP of Country as \% of Global GDP $= \frac{\text{National GDP}}{\text{Global GDP}}$
+                \item \textbf{Formula}: GDP of Country as \% of Global GDP $= \frac{\text{National GDP}}{\text{Global GDP}} \times 100$
                 \item \textbf{Computation}: For years 2016 to 2020, iterate over countries in \texttt{country\_dict} to aggregate GDP to find global GDP. Iterate through all the countries in \texttt{country\_dict} again to use the country's GDP and the global GDP and apply the formula.
                 \item \textbf{Visualization}: Similar to \texttt{GDP \% Change}
             \end{enumerate}
         \item \textbf{Unemployment Rate \% Change}
             \begin{enumerate}[(a)]
-                \item \textbf{Formula}: Year $n$ Unemployment Rate \% Change $= \frac{\text{Unemployment \ Rate}_{n}-\  \text{Unemployment \ Rate}_{n-1}}{\text{Unemployment \ Rate}_{n-1}}$
+                \item \textbf{Formula}: Year $n$ Unemployment Rate \% Change $= \frac{\text{Unemployment \ Rate}_{n}-\  \text{Unemployment \ Rate}_{n-1}}{\text{Unemployment \ Rate}_{n-1}} \times 100$
                 \item \textbf{Computation}: Iterate over all countries in \texttt{country\_dict} and apply the formula for pairs of consecutive years from 2016 to 2020.
                 \item \textbf{Visualization}: Similar to \texttt{GDP \% Change}.
             \end{enumerate}
-        \item \textbf{Sector GDP as a \% of Global GDP Grouped by National Income Quartile}
+        \item \textbf{Aggregate Sector GDP as a \% of Aggregate GDP Grouped by National Income Quartile}
             \begin{enumerate}[(a)]
-                \item \textbf{Formula}: Sector GDP as \% of Global GDP $= \frac{\text{Aggregated \ Global \ Sector \ GDP}}{\text{Global \ GDP}}$
-                \item \textbf{Computation}: Iterate over \texttt{country\_dict} and aggregate national GDP of all countries to calculate global GDP. Aggregate sector GDP for nations in the desired quartile to calculate global sector GDP. Apply the formula with the values calculated.
-                \item \textbf{Visualization}: Generate a bar chart using \texttt{Plotly} for the four sectors (from dataset). For each sector, plot \% of global GDP each sector is responsible for by income quartile.
+                \item \textbf{Formula}: Aggregate Sector GDP as \% of Aggregate GDP $= \frac{\text{Aggregate \ Sector \ GDP}}{\text{Aggregate \ GDP}} \times 100$
+                \item \textbf{Computation}: Iterate over \texttt{country\_dict} and aggregate national GDP of all countries in the desired quartile to calculate aggregate GDP. Aggregate sector GDP for nations in the desired quartile to calculate aggregate sector GDP. Apply the formula with the values calculated.
+                \item \textbf{Visualization}: Generate a bar chart using \texttt{Plotly} for the four sectors (from dataset). For each sector, plot \% of aggregate GDP by income quartile.
             \end{enumerate}
 
         \newpage
@@ -136,7 +136,7 @@ Research conducted by economists shows the wealth gap widened during the industr
             \begin{enumerate}[(a)]
                 \item \textbf{Formula}: GDP = $\beta_{0} + \beta_{1} \times$ COVID-19 deaths per 100,000 population in 2020 $+ \  \epsilon_{i}$
                 \item \textbf{Computation}: Using linear regression, compute the fitted linear regression line and regression coefficients to determine an equation that predicts national GDP given the COVID-19 deaths per 100,000 population in 2020 of a country.
-                \item \textbf{Visualization}: Create a scatter plot with each point being a country on an x-axis of COVID-19 deaths per 100,000 population in 2020 and a y-axis of National GDP and plot the fitted linear regression line using \texttt{Plotly}.
+                \item \textbf{Visualization}: Create a scatter plot with each point representing a country on an x-axis of COVID-19 deaths per 100,000 population in 2020 and a y-axis of National GDP and plot the fitted linear regression line using \texttt{Plotly}.
             \end{enumerate}
         \item \textbf{Total Vaccinations as a Percentage of the Population as a predictor of National GDP}
             \begin{enumerate}[(a)]
@@ -157,7 +157,7 @@ Research conducted by economists shows the wealth gap widened during the industr
 
     \item Krieger, T.,  Meierrieks, D. (2016, March).  Does Income Inequality Lead to Terrorism?  (Rep.  No.  5821). Retrieved \indent from https://www.ifo.de/DocDL/cesifo1wp5821.pdf \\
 
-    \item Madden, D. (2021, January 14). The COVID-19 pandemic has cost the global tourism industry \$935 billion. \indent Forbes. Retrieved November 4, 2021, \indent from https://www.forbes.com/sites/duncanmadden/2021/01/14/the-\indent covid-19-pandemic-has-cost-the-global-tourism-industry-935-billion/?sh=1de6c2077d40. \\
+    \item Madden, D. (2021, January 14). The COVID-19 pandemic has cost the global tourism industry \$935 billion. \indent Forbes. Retrieved November 4, 2021, from https://www.forbes.com/sites/duncanmadden/2021/01/14/the- covid-\indent 19-pandemic-has-cost-the-global-tourism-industry-935-billion/?sh=1de6c2077d40. \\
 
     \item Ritchie, H., Mathieu, E., Rodés-Guirao, L., Appel, C., Giattino, C., Ortiz-Ospina, E., Hasell, J., Macdonald, B., \indent Beltekian, D., &amp; Roser, M. (2020, March 5). Coronavirus (COVID-19) vaccinations - statistics and research. \indent Our World in Data. Retrieved November 4, 2021, from https://ourworldindata.org/covid-vaccinations. \\
 
@@ -170,4 +170,5 @@ Research conducted by economists shows the wealth gap widened during the industr
     \item Understanding Poverty. World Bank. (2021, October 14). Retrieved November 4, 2021, from \\ \indent https://www.worldbank.org/en/topic/poverty/overview#1. \\
 
     \item Unemployment, total (\% of total labor force) (modeled ILO estimate). World Bank Open Data. (2020). Retrieved \indent November 4, 2021, from https://data.worldbank.org/indicator/SL.UEM.TOTL.ZS. \\
+
 \end{document}
