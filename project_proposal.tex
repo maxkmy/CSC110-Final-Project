@@ -58,7 +58,7 @@ Research conducted by economists shows the wealth gap widened during the industr
             \item \textbf{Source}: World Bank
             \item \textbf{Format}: CSV
             \item \textbf{Relevant Column Headers}: Country Code, Income Group
-            \item \textbf{Dimensions}: 273 rows and 4 columns
+            \item \textbf{Dimensions}: 273 rows and 5 columns
             \item \textbf{Additional Notes}: Income group is separated into 4 quartiles (high, upper middle, lower middle, low).
         \end{enumerate}
     \item \textbf{GDP By Sector}
@@ -82,7 +82,7 @@ Research conducted by economists shows the wealth gap widened during the industr
             \item \textbf{Source}: Our World In Data
             \item \textbf{Format}: CSV
             \item \textbf{Relevant Column Headers}: Total Vaccinations as a Percentage of the Population
-            \item \textbf{Dimensions}: 226 rows and 63 columns
+            \item \textbf{Dimensions}: 226 rows and 65 columns
             \item \textbf{Additional Notes}: None
         \end{enumerate}
 \end{enumerate}
@@ -92,7 +92,7 @@ Research conducted by economists shows the wealth gap widened during the industr
     \begin{enumerate}
         \item Create a \texttt{Country} class that bundles data in different CSV files together. Instance attributes include country, 2016 - 2020 GDP, 2016 - 2020 GDP by sector, income quartile, unemployment rate, COVID-19 death rate and vaccination rate.
         \item Create a dictionary that maps a country name to a \texttt{Country} instance with attributes initialized as \texttt{None}.
-        \item Extract necessary fields from each CSV file and assign them to appropriate instance attributes.
+        \item Extract necessary fields from each CSV file and assign them to appropriate country's instance attributes.
         \item The dictionary now maps a country's name to its \texttt{Country} instance containing the attributes required for computation. We refer to this dictionary as \texttt{country\_dict}.
     \end{enumerate}
 
@@ -115,7 +115,8 @@ Research conducted by economists shows the wealth gap widened during the industr
             \begin{enumerate}[(a)]
                 \item \textbf{Formula}: GDP of Country as \% of Global GDP $= \frac{\text{National GDP}}{\text{Global GDP}} \times 100$
                 \item \textbf{Computation}: For years 2016 to 2020, iterate over countries in \texttt{country\_dict} to aggregate GDP to find global GDP. Iterate through all the countries in \texttt{country\_dict} again to use the country's GDP and the global GDP and apply the formula.
-                \item \textbf{Visualization}: Similar to \texttt{GDP \% Change}
+                \item \textbf{Visualization}:
+                Generate a chloropleth map using difference in GDP as \% of global GDP between 2016 and 2020 (e.g. green represents increase in GDP as \% of global GDP) using \texttt{Geopandas}.
             \end{enumerate}
         \item \textbf{Unemployment Rate \% Change}
             \begin{enumerate}[(a)]
@@ -127,7 +128,7 @@ Research conducted by economists shows the wealth gap widened during the industr
             \begin{enumerate}[(a)]
                 \item \textbf{Formula}: Aggregate Sector GDP as \% of Aggregate GDP $= \frac{\text{Aggregate \ Sector \ GDP}}{\text{Aggregate \ GDP}} \times 100$
                 \item \textbf{Computation}: Iterate over \texttt{country\_dict} and aggregate national GDP of all countries in the desired quartile to calculate aggregate GDP. Aggregate sector GDP for nations in the desired quartile to calculate aggregate sector GDP. Apply the formula with the values calculated.
-                \item \textbf{Visualization}: Generate a bar chart using \texttt{Plotly} for the four sectors (from dataset). For each sector, plot \% of aggregate GDP by income quartile.
+                \item \textbf{Visualization}: Generate a bar chart using \texttt{Plotly} for the four sectors (from dataset). For each sector, plot sector GDP as a \% of aggregate GDP for each income quartile.
             \end{enumerate}
 
         \newpage
