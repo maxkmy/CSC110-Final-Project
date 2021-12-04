@@ -12,7 +12,7 @@
 \maketitle
 
 \section*{Problem Description and Research Question}
-Research conducted by economists shows the wealth gap widened during the industrial revolution (Rychbosh, 2015). Before the industrial revolution, the richest countries were 3 times as rich as the poorest countries. Today, this difference widens to more than 100-fold. The wealth gap deserves attention as poorer countries are more susceptible to social problems like poverty, terrorism and subpar living condition (Krieger, 2016; Cookson, 2020).
+Research conducted by economists shows the wealth gap widened during the industrial revolution (Rychbosh, 2015). Before the industrial revolution, the richest countries were 3 times as rich as the poorest countries. Today, this difference widens to more than 100-fold. The wealth gap deserves attention as poorer countries are more susceptible to social problems like poverty, terrorism and subpar living condition (Krieger, 2016; ``Standard of Living", n.d.).
 \\
 
 \noindent Two ideas come to mind when considering how COVID-19 and the global wealth gap interact:
@@ -24,7 +24,7 @@ Research conducted by economists shows the wealth gap widened during the industr
 
     Thus, it is interesting to understand the magnitude of impact COVID-19 exerts on different nations of different economic structures.
 
-    \item Research shows 60\% of people in high-income countries receive a first dose vaccine while this number is only 1\% in low-income countries (N/A, 2021). This disparity is attributable to different levels of wealth and healthcare networks which affects countries’ ability to respond to COVID-19.
+    \item Research shows 60\% of people in high-income countries receive a first dose vaccine while this number is only 1\% in low-income countries (``Vaccine inequality", 2021). This disparity is attributable to different levels of wealth and healthcare networks which affects countries’ ability to respond to COVID-19.
 
     We predict that quicker response of wealthier nations resulted in less impact on their workforce and economy, thus widening the wealth gap. We hope to examine this prediction using datasets we find.
 \end{enumerate}
@@ -32,7 +32,7 @@ Research conducted by economists shows the wealth gap widened during the industr
 \\
 \noindent The 2 ideas lead us to question  \textbf{how COVID-19 impacts the global wealth gap}. Since gross domestic product (GDP) is a widely accepted economic metric to measure a nation’s output and income, we will analyze GDP by sector, GDP and unemployment rate to assess the magnitude of impact COVID-19 exerts on countries of different stages of development (idea 1). We also consider non-economic metrics like death rate and vaccination rate to understand how nations’ varying capabilities to respond to COVID-19 influence their economic performance (idea 2).  \\
 
-\noindent Overall, these findings will help understand the impact COVID-19 exerts on countries from economic and social perspectives. The results may help policy makers at national and international levels (e.g. World Bank) better understand the vulnerability of economies of different nations. Appropriate recommendations can be made to reduce the wealth gap, thus better preparing for future pandemics.
+\noindent Overall, these findings will uncover the impact COVID-19 exerts on countries from economic and social perspectives. The results may help policy makers at national and international levels (e.g. World Bank) better understand the vulnerability of economies of different nations. Appropriate recommendations can be made to reduce the wealth gap, thus better preparing for future pandemics.
 \newpage
 
 \section*{Dataset Description}
@@ -65,7 +65,7 @@ Research conducted by economists shows the wealth gap widened during the industr
         \begin{enumerate}[(a)]
             \item \textbf{Source}: World Bank
             \item \textbf{Format}: CSV
-            \item \textbf{Relevant Column Headers}: Country Name, Manufacturing 2016, Service 2016, Industry 2016, Agriculture, forestry and fishing 2016 (same format for 2017, 2018, 2019, 2020)
+            \item \textbf{Relevant Column Headers}: Country Name, 2016 Manufacturing Value Added, 2016 Services Value Added, 2016 Industry Value Added, 2016 Agriculture, Forestry and Fishing Value Added (same format for 2017, 2018, 2019, 2020)
             \item \textbf{Dimensions}: 272 rows and 22 columns
             \item \textbf{Additional Notes}: Monetary values are recorded in USD.
         \end{enumerate}
@@ -90,9 +90,9 @@ Research conducted by economists shows the wealth gap widened during the industr
 \section*{Computational Plan}
     \subsection*{Data Processing}
     \begin{enumerate}
-        \item Create a \texttt{Country} class that bundles data in different CSV files together. Instance attributes include country, 2016 - 2020 GDP, 2016 - 2020 GDP by sector, income quartile, unemployment rate, COVID-19 death rate and vaccination rate.
+        \item Create a \texttt{Country} class that bundles data in different CSV files together. Instance attributes include country, 2016 - 2020 GDP, 2016 - 2020 GDP by sector, income quartile, 2016 - 2020 unemployment rate, COVID-19 mortality rate and vaccination rate.
         \item Create a dictionary that maps a country name to a \texttt{Country} instance with attributes initialized as \texttt{None}.
-        \item Extract necessary fields from each CSV file and assign them to appropriate country's instance attributes.
+        \item Extract necessary fields from each CSV file and assign them to the appropriate country's instance attributes.
         \item The dictionary now maps a country's name to its \texttt{Country} instance containing the attributes required for computation. We refer to this dictionary as \texttt{country\_dict}.
     \end{enumerate}
 
@@ -102,7 +102,7 @@ Research conducted by economists shows the wealth gap widened during the industr
         \item \textbf{Geopandas}: Geopandas helps work with geospatial data. Geopandas will be used to plot choropleth maps which are coloured maps where the colour of a country is determined by a numeric value.
     \end{enumerate}
 
-    \subsection*{Computation By Metrics}
+    \subsection*{Computations By Metrics}
     \begin{enumerate}
         \item \textbf{GDP \% Change}
             \begin{enumerate}[(a)]
@@ -128,7 +128,7 @@ Research conducted by economists shows the wealth gap widened during the industr
             \begin{enumerate}[(a)]
                 \item \textbf{Formula}: Aggregate Sector GDP as \% of Aggregate GDP $= \frac{\text{Aggregate \ Sector \ GDP}}{\text{Aggregate \ GDP}} \times 100$
                 \item \textbf{Computation}: Iterate over \texttt{country\_dict} and aggregate national GDP of all countries in the desired quartile to calculate aggregate GDP. Aggregate sector GDP for nations in the desired quartile to calculate aggregate sector GDP. Apply the formula with the values calculated.
-                \item \textbf{Visualization}: Generate a bar chart using \texttt{Plotly} for the four sectors (from dataset). For each sector, plot sector GDP as a \% of aggregate GDP for each income quartile.
+                \item \textbf{Visualization}: Generate a bar chart using \texttt{Plotly} for the four sectors (from dataset). For each sector, plot aggregate sector GDP as a \% of aggregate GDP for each income quartile.
             \end{enumerate}
 
         \newpage
@@ -137,13 +137,13 @@ Research conducted by economists shows the wealth gap widened during the industr
             \begin{enumerate}[(a)]
                 \item \textbf{Formula}: GDP = $\beta_{0} + \beta_{1} \times$ COVID-19 deaths per 100,000 population in 2020 $+ \  \epsilon_{i}$
                 \item \textbf{Computation}: Using linear regression, compute the fitted linear regression line and regression coefficients to determine an equation that predicts national GDP given the COVID-19 deaths per 100,000 population in 2020 of a country.
-                \item \textbf{Visualization}: Create a scatter plot with each point representing a country on an x-axis of COVID-19 deaths per 100,000 population in 2020 and a y-axis of National GDP and plot the fitted linear regression line using \texttt{Plotly}.
+                \item \textbf{Visualization}: Create a scatter plot with each point representing a country on an x-axis of COVID-19 deaths per 100,000 population in 2020 and a y-axis of national GDP and plot the fitted linear regression line using \texttt{Plotly}.
             \end{enumerate}
         \item \textbf{Total Vaccinations as a Percentage of the Population as a predictor of National GDP}
             \begin{enumerate}[(a)]
                 \item \textbf{Formula}: GDP = $\beta_{0} + \beta_{1} \times$ Total Vaccinations as a Percentage of the Population $+ \ \epsilon_{i}$
-                \item \textbf{Computation}: Similar to \texttt{COVID-19 related deaths as a predictor of National GDP}
-                \item \textbf{Visualization}: Similar to \texttt{COVID-19 related deaths as a predictor of National GDP}
+                \item \textbf{Computation}: Similar to \texttt{COVID-19 related deaths as a predictor of National GDP}.
+                \item \textbf{Visualization}: Similar to \texttt{COVID-19 related deaths as a predictor of National GDP}.
             \end{enumerate}
     \end{enumerate}
 
@@ -166,11 +166,11 @@ Research conducted by economists shows the wealth gap widened during the industr
 
     \item Ryckbosch, W. (2015, September 25). Economic inequality and growth before the industrial revolution: the case \indent of the Low Countries (fourteenth to nineteenth centuries). Oxford Academic. Retrieved November 4, 2021, from \indent https://academic.oup.com/ereh/article/20/1/1/2465267. \\
 
+    \item Standard of living in the developing world. GiveWell. (n.d.). Retrieved November 6, 2021, from https://www.givewell\\ \indent .org/international/technical/additional/Standard-of-Living. \\
+
     \item The Economist Newspaper. (2021, August 30). Vaccine inequality will cost money as well as lives. The Economist. \indent Retrieved November 4, 2021, from https://www.economist.com/graphic-detail/2021/08/30/vaccine-inequality-\indent will-cost-money-as-well-as-lives. \\
 
     \item Todorov, V. (2020, June 3). Global manufacturing production drops sharply due to economic disruptions caused \indent by covid-19 – UNIDO report. UNIDO. Retrieved November 4, 2021, from https://www.unido.org/news/global-\indent manufacturing-production-drops-sharply-due-economic-disruptions-caused-covid-19-unido-report. \\
-
-    \item Understanding Poverty. World Bank. (2021, October 14). Retrieved November 4, 2021, from \\ \indent https://www.worldbank.org/en/topic/poverty/overview#1. \\
 
     \item Unemployment, total (\% of total labor force) (modeled ILO estimate). World Bank Open Data. (2020). Retrieved \indent November 4, 2021, from https://data.worldbank.org/indicator/SL.UEM.TOTL.ZS. \\
 
