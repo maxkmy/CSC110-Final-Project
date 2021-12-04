@@ -7,7 +7,10 @@ import csv
 
 class Country:
     """ A class representing each country with their associated statistics
+
+        test
     """
+
     def __init__(self, name: str) -> None:
         self.name = name
 
@@ -137,7 +140,9 @@ def populate_attribute_name(country_dict: dict, filename: str, lines: int, attri
             country = row[name_col].capitalize()
             # iterate through all attributes and their respective columns
             for i in range(len(attributes)):
-                setattr(country_dict[country], attributes[i], float(row[columns[i]]))
+                # assign attribute only if there is valid data in the respective point
+                if len(row[columns[i]]) > 0:
+                    setattr(country_dict[country], attributes[i], float(row[columns[i]]))
 
 
 def populate_attribute_code(country_dict: dict, code_to_country: dict, filename: str, lines: int,
