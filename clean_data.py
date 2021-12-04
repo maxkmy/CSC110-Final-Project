@@ -8,7 +8,7 @@ import csv
 class Country:
     """ A class representing each country with their associated statistics
 
-    TODO: add representation invariants and instance attributes
+    TODO: add representation invariants and instance attributes and sample usage
     """
     def __init__(self, name: str) -> None:
         self.name = name
