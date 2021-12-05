@@ -15,8 +15,9 @@ def plot_percentage_change(name: str, metric: str) -> None:
 
 
     Sample Usage:
-    >>> plot_percentage_change('Canada','gdp')
     >>> plot_percentage_change('Australia','unemployment')
+    >>> plot_percentage_change('Canada','gdp')
+
     """
     # Convert the outputs into parallel x and y lists
     x_data, y_data = compute.get_xy_data(compute.percent_change_list(data.clean_data()[name], metric))

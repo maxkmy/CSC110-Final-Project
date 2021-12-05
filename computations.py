@@ -29,7 +29,7 @@ def percent_change_list(country_data: Country, metric: str) -> list[tuple[float,
     of the year.
 
     TODO: add doctest
-
+    TODO: add doctest
     """
     percent_change_so_far = []
     if metric == 'gdp':
