@@ -52,15 +52,81 @@ class Country:
         return self.name
 
 
-def clean_data() -> dict[str, Country]:
-    """ Main method that contains helper function calls to clean data
+def populate_dictionary() -> tuple[dict[str, str], dict[str, Country]]:
+    """ Return a tuple of dictionary. The first dictionary maps the country code to a country name
+    and the second dictionary maps the country name to a Country instance.
     """
-    code_to_country, country_dict = populate_dictionary()
-    get_national_gdp(country_dict)
-    get_income_group(country_dict, code_to_country)
-    get_sector_gdp(country_dict)
-    get_unemployment(country_dict)
-    return country_dict
+    # initialize accumulators
+    country_dict = {}
+    code_to_country = {}
+    # open csv file
+    with open('raw_data/national_gdp.csv') as file:
+        reader = csv.reader(file, delimiter=',')
+        # skip the first 5 lines
+        for _ in range(5):
+            next(reader)
+        # iterate through all the remaining rows
+        for row in reader:
+            # get the country's name and country code
+            name = row[0].capitalize()
+            code = row[1]
+            # map the name to a Country instance and the code to the name
+            country_dict[name] = Country(name)
+            code_to_country[code] = name
+    # return both accumulators
+    return code_to_country, country_dict
+
+
+def populate_attribute_name(country_dict: dict, filename: str, lines: int, attributes: [str],
+                            columns: [int], name_col: int) -> None:
+    """ Populate the attributes of Country instance attribute where csv file contains the country
+    name.
+    """
+    # open csv file
+    with open(filename) as file:
+        reader = csv.reader(file, delimiter=',')
+        # skip the first 'lines' lines
+        for _ in range(lines):
+            next(reader)
+        # iterate through all the remaining rows
+        for row in reader:
+            # get the name of the country
+            country = row[name_col].capitalize()
+            # check country is in country_dict
+            if country in country_dict:
+                # iterate through all attributes and their respective columns
+                for i in range(len(attributes)):
+                    # convert data in csv file to float if possible, else keep as string
+                    try:
+                        setattr(country_dict[country], attributes[i], float(row[columns[i]]))
+                    except ValueError:
+                        setattr(country_dict[country], attributes[i], (row[columns[i]]))
+
+
+def populate_attribute_code(country_dict: dict, code_to_country: dict, filename: str, lines: int,
+                            attributes: [str], columns: [int], code_col: int) -> None:
+    """ Populate the attributes of Country instance attribute where csv file contains the country
+    code.
+    """
+    # open csv file
+    with open(filename) as file:
+        reader = csv.reader(file, delimiter=',')
+        # skip the first 'lines' lines
+        for _ in range(lines):
+            next(reader)
+        # iterate through all the remaining rows
+        for row in reader:
+            # get the country's code and map the code to the name
+            country = code_to_country[row[code_col]]
+            # check country is in country_dict
+            if country in country_dict:
+                # iterate through all attributes and their respective columns
+                for i in range(len(attributes)):
+                    # convert data in csv file to float if possible, else keep as string
+                    try:
+                        setattr(country_dict[country], attributes[i], float(row[columns[i]]))
+                    except ValueError:
+                        setattr(country_dict[country], attributes[i], (row[columns[i]]))
 
 
 def get_national_gdp(country_dict: dict) -> None:
@@ -110,68 +176,15 @@ def get_unemployment(country_dict: dict) -> None:
     populate_attribute_name(country_dict, filename, 4, attributes, columns, 0)
 
 
-def populate_dictionary() -> tuple[dict[str, str], dict[str, Country]]:
-    """ Return a tuple of dictionary. The first dictionary maps the country code to a country name
-    and the second dictionary maps the country name to a Country instance.
+def clean_data() -> dict[str, Country]:
+    """ Main method that contains helper function calls to clean data
     """
-    # create country_dict accumulator
-    country_dict = {}
-    code_to_country = {}
-    # open csv file
-    with open('raw_data/national_gdp.csv') as file:
-        reader = csv.reader(file, delimiter=',')
-        # skip the first 4 line
-        for _ in range(5):
-            next(reader)
-        for row in reader:
-            name = row[0].capitalize()
-            code = row[1]
-            country_dict[name] = Country(name)
-            code_to_country[code] = name
-    return code_to_country, country_dict
-
-
-def populate_attribute_name(country_dict: dict, filename: str, lines: int, attributes: [str],
-                            columns: [int], name_col: int) -> None:
-    """ Populate the attributes of Country instance attribute where csv file contains the country
-    name.
-    """
-    with open(filename) as file:
-        reader = csv.reader(file, delimiter=',')
-        # skip the first 'lines' lines
-        for _ in range(lines):
-            next(reader)
-        for row in reader:
-            # get the name of the country
-            country = row[name_col].capitalize()
-            if country in country_dict:
-                # iterate through all attributes and their respective columns
-                for i in range(len(attributes)):
-                    # convert data in csv file to float if possible
-                    try:
-                        setattr(country_dict[country], attributes[i], float(row[columns[i]]))
-                    except ValueError:
-                        setattr(country_dict[country], attributes[i], (row[columns[i]]))
-
-
-def populate_attribute_code(country_dict: dict, code_to_country: dict, filename: str, lines: int,
-                            attributes: [str], columns: [int], code_col: int) -> None:
-    """ Populate the attributes of Country instance attribute where csv file contains the country
-    code.
-    """
-    with open(filename) as file:
-        reader = csv.reader(file, delimiter=',')
-        # skip the first 'lines' lines
-        for _ in range(lines):
-            next(reader)
-        for row in reader:
-            # get the name of the country
-            country = code_to_country[row[code_col]]
-            if country in country_dict:
-                # iterate through all attributes and their respective columns
-                for i in range(len(attributes)):
-                    # convert data in csv file to float
-                    try:
-                        setattr(country_dict[country], attributes[i], float(row[columns[i]]))
-                    except ValueError:
-                        setattr(country_dict[country], attributes[i], (row[columns[i]]))
+    # populate the dictionary with country names and Country instances
+    code_to_country, country_dict = populate_dictionary()
+    # get required attributes from csv files
+    get_national_gdp(country_dict)
+    get_income_group(country_dict, code_to_country)
+    get_sector_gdp(country_dict)
+    get_unemployment(country_dict)
+    # return cleaned data
+    return country_dict
