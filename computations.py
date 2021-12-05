@@ -15,8 +15,8 @@ def get_percent_change(root: str, new_attr_suffix: str, old_attr_suffix, country
     # retrieve the country instance
     country = country_dict[country]
     # assign new_attr and old_attr
-    new_attr = root + new_attr_suffix
-    old_attr = root + old_attr_suffix
+    new_attr = root + '_' + new_attr_suffix
+    old_attr = root + '_' + old_attr_suffix
     # get the old and new attribute values
     new = getattr(country, new_attr)
     old = getattr(country, old_attr)
@@ -24,7 +24,7 @@ def get_percent_change(root: str, new_attr_suffix: str, old_attr_suffix, country
     return (new - old) / old * 100
 
 
-def get_percent_change_over_time(root: str, start: int, end: int, country: str) -> List[float]:
+def get_percent_change_over_time(root: str, start: int, end: int, country: str) -> List[tuple[float, float]]:
     """ Calculates the percentage change of the desired attribute (root) between consecutive years
     rangging from start to end inclusive
     """
@@ -36,7 +36,7 @@ def get_percent_change_over_time(root: str, start: int, end: int, country: str) 
         cur = str(year)
         nxt = str(year + 1)
         # calculate and append the percent change between the attribute root + nxt and root + cur
-        percentage_changes.append(get_percent_change(root, nxt, cur, country))
+        percentage_changes.append((float(nxt), get_percent_change(root, nxt, cur, country)))
     # return the list of percentage change
     return percentage_changes
 
@@ -89,3 +89,19 @@ def get_percent_of_whole_all_countries(attr: str) -> dict[str, float]:
             country_to_percent_of_aggregate[country] = percent_of_aggregate
     # return the accumulator
     return country_to_percent_of_aggregate
+
+
+def get_xy_data(ordered_data: list[tuple[float, float]]) -> tuple[list[int], list[float]]:
+    """Return a tuple of two parallel lists. The first list contains the keys of outputs as
+        ints representing the year. The second list contains the corresponding value of
+        the attribute of the specific metric for data (gdp or unemployment % change)
+    TODO: add doctest
+    """
+    # ACCUMULATOR year_so_far: strings from outputs
+    year_so_far = []
+    # ACCUMULATOR outputs_so_far: floats from outputs
+    data_so_far = []
+    for put in ordered_data:
+        list.append(year_so_far, put[0])
+        list.append(data_so_far, put[1])
+    return year_so_far, data_so_far

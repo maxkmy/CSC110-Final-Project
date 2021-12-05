@@ -14,7 +14,7 @@ def plot_percentage_change(name: str, root: str, start: int, end: int) -> None:
 
 
     Sample Usage:
-    >>> plot_percentage_change('Australia','unemployment')
+    >>> plot_percentage_change('Australia', 'unemployment', 2016, 2020)
     >>> plot_percentage_change('Canada', 'gdp', 2016, 2020)
 
     """
