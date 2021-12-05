@@ -48,9 +48,6 @@ class Country:
         self.unemployment_2019 = None
         self.unemployment_2020 = None
 
-        self.vaccination_per_hundred = None
-        self.deaths_per_million = None
-
     def __str__(self) -> str:
         return self.name
 
@@ -63,7 +60,6 @@ def clean_data() -> dict[str, Country]:
     get_income_group(country_dict, code_to_country)
     get_sector_gdp(country_dict)
     get_unemployment(country_dict)
-    get_covid_data(country_dict)
     return country_dict
 
 
@@ -112,17 +108,6 @@ def get_unemployment(country_dict: dict) -> None:
     ]
     columns = [-5, -4, -3, -2, -1]
     populate_attribute_name(country_dict, filename, 4, attributes, columns, 0)
-
-
-def get_covid_data(country_dict: dict) -> None:
-    """ Retrieve vaccination and death rates data from covid_vaccination.csv
-    """
-    filename = 'raw_data/covid_vaccination.csv'
-    attributes = [
-        'vaccination_per_hundred', 'deaths_per_million'
-    ]
-    columns = [40, 13]
-    populate_attribute_name(country_dict, filename, 1, attributes, columns, 2)
 
 
 def populate_dictionary() -> tuple[dict[str, str], dict[str, Country]]:
