@@ -42,9 +42,9 @@ def percent_change_list(country_data: Country, metric: str) -> list[tuple[float,
                 country_data.unemployment_2020]
     else:
         return []
-    if all(len(str(x)) == 0 for x in data):
+    if any(len(str(x)) == 0 for x in data):
         return []
-    year_so_far = 2016
+    year_so_far = 2017
     for i in range(len(data) - 1):
         value = percentage_change(data[i + 1], data[i])
         list.append(percent_change_so_far, (year_so_far, value))
