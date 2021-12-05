@@ -6,7 +6,7 @@ import clean_data as data
 import computations as compute
 
 
-def plot_percentage_change(name: str, metric: str) -> None:
+def plot_percentage_change(name: str, root: str, start: int, end: int) -> None:
     """Plot trend.
 
     Preconditions:
@@ -16,11 +16,12 @@ def plot_percentage_change(name: str, metric: str) -> None:
 
     Sample Usage:
     >>> plot_percentage_change('Australia','unemployment')
-    >>> plot_percentage_change('Canada','gdp')
+    >>> plot_percentage_change('Canada', 'gdp', 2016, 2020)
 
     """
+
     # Convert the outputs into parallel x and y lists
-    x_data, y_data = compute.get_xy_data(compute.percent_change_list(data.clean_data()[name], metric))
+    x_data, y_data = compute.get_xy_data(compute.get_percent_change_over_time(root, start, end, name))
 
 
     # Create the figure
@@ -28,7 +29,7 @@ def plot_percentage_change(name: str, metric: str) -> None:
     fig.add_trace(go.Scatter(x=x_data, y=y_data, name=name))
 
     # Configure the figure
-    fig.update_layout(title=f'Annual {metric} Percent Change of {name}',
+    fig.update_layout(title=f'Annual {root} Percent Change of {name}',
                       xaxis_title='(Year)',
                       yaxis_title=f'Calculated Percentage Change')
 
