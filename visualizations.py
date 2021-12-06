@@ -17,6 +17,7 @@ def plot_percentage_change(root: str, start: int, end: int) -> None:
 
     Sample Usage:
     >>> plot_percentage_change('gdp_', 2016, 2020)
+    >>> plot_percentage_change('unemployment_', 2016, 2020)
 
     """
 
@@ -41,19 +42,25 @@ def plot_percentage_change(root: str, start: int, end: int) -> None:
     yaxis_title = ''.join(yaxis_title)
 
     # Configure the figure
-    fig.update_layout(title=f'Annual {root} Percent Change of Selected Country',
-                      xaxis_title='(Year)',
+    fig.update_layout(title=f'Annual {yaxis_title} Percent Change of Selected Country',
+                      xaxis_title='Year',
                       yaxis_title=f'{yaxis_title} Percentage Change')
 
     # Add dropdown
 
-    buttons_so_far = []
+    buttons_so_far = [dict(
+        label='All',
+        method='update',
+        args=[{'visible': [True for x in range(len(country_list))]},
+              {'title': f'Annual {yaxis_title} Percent Change of Countries',
+               'showlegend': True}])]
+
     for i in range(len(country_list)):
         list.append(buttons_so_far, dict(
             label=country_list[i],
             method='update',
             args=[{'visible': [x == i for x in range(len(country_list))]},
-                  {'title': 'All',
+                  {'title': f'Annual {yaxis_title} Percent Change of {country_list[i]}',
                    'showlegend': True}]))
 
     fig.update_layout(
