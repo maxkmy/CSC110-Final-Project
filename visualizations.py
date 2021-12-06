@@ -2,38 +2,69 @@
 """
 
 import plotly.graph_objects as go
+
+import pandas as pd
+
+import clean_data
 import computations
 
 
-def plot_percentage_change(country: str, root: str, start: int, end: int) -> None:
+def plot_percentage_change(root: str, start: int, end: int) -> None:
     """Plot trend.
 
     Preconditions:
         - outputs != {}
 
     Sample Usage:
-    >>> plot_percentage_change('Australia', 'unemployment', 2016, 2020)
-    >>> plot_percentage_change('Canada', 'gdp', 2016, 2020)
+    >>> plot_percentage_change('gdp_', 2016, 2020)
 
     """
-    ordered_data = computations.get_percent_change_over_time(root, start, end, country)
-    x_data, y_data = computations.get_xy_data(ordered_data)
+
+    countries = [clean_data.clean_data()[x] for x in clean_data.clean_data()]
+
+    # Create the figure
+    fig = go.Figure()
+    counter = 0
+    country_list = []
+    for country in countries:
+        try:
+            ordered_data = computations.get_percent_change_over_time(root, start, end, country.name)
+            x_data, y_data = computations.get_xy_data(ordered_data)
+
+            fig.add_trace(go.Scatter(x=x_data, y=y_data, name=country.name))
+            list.append(country_list, country.name)
+            counter += 1
+        except TypeError:
+            pass
 
     yaxis_title = [word.capitalize() for word in (root.split('_'))]
     yaxis_title = ''.join(yaxis_title)
 
-    # Create the figure
-    fig = go.Figure()
-    fig.add_trace(go.Scatter(x=x_data, y=y_data, name=country))
-
     # Configure the figure
-    fig.update_layout(title=f'Annual {root} Percent Change of {country}',
+    fig.update_layout(title=f'Annual {root} Percent Change of Selected Country',
                       xaxis_title='(Year)',
                       yaxis_title=f'{yaxis_title} Percentage Change')
 
-    # Show the figure in the browser
+    # Add dropdown
+
+    buttons_so_far = []
+    for i in range(len(country_list)):
+        list.append(buttons_so_far, dict(
+            label=country_list[i],
+            method='update',
+            args=[{'visible': [x == i for x in range(len(country_list))]},
+                  {'title': 'All',
+                   'showlegend': True}]))
+
+    fig.update_layout(
+        updatemenus=[go.layout.Updatemenu(
+            active=0,
+            buttons=buttons_so_far
+        )
+
+        ]
+    )
+
     fig.show()
-    # Is the above not working for you? Comment it out, and uncomment the following:
-    # fig.write_html('my_figure.html')
-    # You will need to manually open the my_figure.html file created above.
+
 
