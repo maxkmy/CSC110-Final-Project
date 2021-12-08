@@ -20,22 +20,22 @@ class Country:
         - gdp_service_2016: GDP value of self in service sector in 2016
         - gdp_industry_2016: GDP value of self in industry sector in 2016
         - gdp_agriculture_forestry_fishing_2016: GDP value of self in agriculture sector in 2016
-        - gdp_manufacturing_2017: GDP value of self in manufacturing sector in 2016
-        - gdp_service_2017: GDP value of self in service sector in 2016
-        - gdp_industry_2017: GDP value of self in industry sector in 2016
-        - gdp_agriculture_forestry_fishing_2017: GDP value of self in agriculture sector in 2016
-        - gdp_manufacturing_2018: GDP value of self in manufacturing sector in 2016
-        - gdp_service_2018: GDP value of self in service sector in 2016
-        - gdp_industry_2018: GDP value of self in industry sector in 2016
-        - gdp_agriculture_forestry_fishing_2018: GDP value of self in agriculture sector in 2016
-        - gdp_manufacturing_2019: GDP value of self in manufactoring sector in 2016
-        - gdp_service_2019: GDP value of self in service sector in 2016
-        - gdp_industry_2019: GDP value of self in industry sector in 2016
-        - gdp_agriculture_forestry_fishing_2019: GDP value of self in agriculture sector in 2016
-        - gdp_manufacturing_2020: GDP value of self in manufactoring sector in 2016
-        - gdp_service_2020: GDP value of self in service sector in 2016
-        - gdp_industry_2020: GDP value of self in industry sector in 2016
-        - gdp_agriculture_forestry_fishing_2020: GDP value of self in agriculture section in 2016
+        - gdp_manufacturing_2017: GDP value of self in manufacturing sector in 2017
+        - gdp_service_2017: GDP value of self in service sector in 2017
+        - gdp_industry_2017: GDP value of self in industry sector in 2017
+        - gdp_agriculture_forestry_fishing_2017: GDP value of self in agriculture sector in 2017
+        - gdp_manufacturing_2018: GDP value of self in manufacturing sector in 2018
+        - gdp_service_2018: GDP value of self in service sector in 2018
+        - gdp_industry_2018: GDP value of self in industry sector in 2018
+        - gdp_agriculture_forestry_fishing_2018: GDP value of self in agriculture sector in 2018
+        - gdp_manufacturing_2019: GDP value of self in manufactoring sector in 2019
+        - gdp_service_2019: GDP value of self in service sector in 2019
+        - gdp_industry_2019: GDP value of self in industry sector in 2019
+        - gdp_agriculture_forestry_fishing_2019: GDP value of self in agriculture sector in 2019
+        - gdp_manufacturing_2020: GDP value of self in manufactoring sector in 2020
+        - gdp_service_2020: GDP value of self in service sector in 2020
+        - gdp_industry_2020: GDP value of self in industry sector in 2020
+        - gdp_agriculture_forestry_fishing_2020: GDP value of self in agriculture section in 2020
         - unemployment_2016: unemployment value of 'self' reported in year 2016
         - unemployment_2017: unemployment value of 'self' reported in year 2017
         - unemployment_2018: unemployment value of 'self' reported in year 2018
