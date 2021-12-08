@@ -7,7 +7,45 @@ import csv
 
 class Country:
     """ A class representing each country with their associated statistics
-    TODO: add representation invariants and instance attributes and sample usage
+
+
+    Instance Attributes:
+        - gdp_2016: national GDP value of 'self' reported in the year 2016
+        - gdp_2017: national GDP value of 'self' reported in the year 2017
+        - gdp_2018: national GDP value of 'self' reported in the year 2018
+        - gdp_2019: national GDP value of 'self' reported in the year 2019
+        - gdp_2020: national GDP value of 'self' reported in the year 2020
+        - income_group: income rating of country ('High...', 'Medium...', 'Low..')
+        - gdp_manufacturing_2016: GDP value of self in manufactoring sector in 2016
+        - gdp_service_2016: GDP value of self in service sector in 2016
+        - gdp_industry_2016: GDP value of self in industry sector in 2016
+        - gdp_agriculture_forestry_fishing_2016: GDP value of self in agriculture sector in 2016
+        - gdp_manufacturing_2017: GDP value of self in manufacturing sector in 2016
+        - gdp_service_2017: GDP value of self in service sector in 2016
+        - gdp_industry_2017: GDP value of self in industry sector in 2016
+        - gdp_agriculture_forestry_fishing_2017: GDP value of self in agriculture sector in 2016
+        - gdp_manufacturing_2018: GDP value of self in manufacturing sector in 2016
+        - gdp_service_2018: GDP value of self in service sector in 2016
+        - gdp_industry_2018: GDP value of self in industry sector in 2016
+        - gdp_agriculture_forestry_fishing_2018: GDP value of self in agriculture sector in 2016
+        - gdp_manufacturing_2019: GDP value of self in manufactoring sector in 2016
+        - gdp_service_2019: GDP value of self in service sector in 2016
+        - gdp_industry_2019: GDP value of self in industry sector in 2016
+        - gdp_agriculture_forestry_fishing_2019: GDP value of self in agriculture sector in 2016
+        - gdp_manufacturing_2020: GDP value of self in manufactoring sector in 2016
+        - gdp_service_2020: GDP value of self in service sector in 2016
+        - gdp_industry_2020: GDP value of self in industry sector in 2016
+        - gdp_agriculture_forestry_fishing_2020: GDP value of self in agriculture section in 2016
+        - unemployment_2016: unemployment value of 'self' reported in year 2016
+        - unemployment_2017: unemployment value of 'self' reported in year 2017
+        - unemployment_2018: unemployment value of 'self' reported in year 2018
+        - unemployment_2019: unemployment value of 'self' reported in year 2019
+        - unemployment_2020: unemployment value of 'self' reported in year 2020
+
+    Representation Invariants:
+        - self.name != ''
+
+
     """
 
     def __init__(self, name: str) -> None:
