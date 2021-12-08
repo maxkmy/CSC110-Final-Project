@@ -96,7 +96,10 @@ def get_xy_data(ordered_data: list[tuple[int, float]]) -> tuple[list[int], list[
         ints representing the year. The second list contains the corresponding value of
         the attribute of the specific metric for data (gdp or unemployment % change)
 
-    TODO: add doctest
+    >>> data = [(2016, 4.5), (2017, 8.8) ,(2018, 12.4) ,(2019, 17.8) ,(2020, 40.2)]
+    >>> get_xy_data(data)
+    ([2016, 2017, 2018, 2019, 2020], [4.5, 8.8, 12.4, 17.8, 40.2])
+
     """
     # ACCUMULATOR year_so_far: strings from outputs
     year_so_far = []
