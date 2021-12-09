@@ -94,12 +94,13 @@ class Country:
         return self.name
 
 
-def populate_dictionary() -> dict[str, Country]:
+def populate_dictionary() -> tuple[dict[str, Country], dict[str, str]]:
     """ Return a tuple of dictionary. The first dictionary maps the country code to a country name
     and the second dictionary maps the country name to a Country instance.
     """
     # initialize accumulators
     country_dict = {}
+    code_dict = {}
     # open csv file
     with open('raw_data/national_gdp.csv') as file:
         reader = csv.reader(file, delimiter=',')
@@ -113,8 +114,11 @@ def populate_dictionary() -> dict[str, Country]:
             code = row[1]
             # map the name to a Country instance and the code to the name
             country_dict[name] = Country(name)
+            code_dict[name] = code
+
+
     # return both accumulators
-    return country_dict
+    return country_dict, code_dict
 
 
 def populate_attribute_name(country_dict: dict, filename: str, lines: int, attributes: [str],
@@ -236,7 +240,7 @@ def clean_data() -> dict[str, Country]:
     """ Main method that contains helper function calls to clean data
     """
     # populate the dictionary with country names and Country instances
-    country_dict = populate_dictionary()
+    country_dict = populate_dictionary()[0]
     # get required attributes from csv files
     get_national_gdp(country_dict)
     get_gdp_quartile(country_dict)

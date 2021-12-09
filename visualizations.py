@@ -2,7 +2,7 @@
 """
 
 import plotly.graph_objects as go
-
+import pandas as pd
 import clean_data
 import computations
 
@@ -62,6 +62,49 @@ def plot_percentage_change(root: str, start: int, end: int) -> None:
             active=0,
             buttons=buttons
         )]
+    )
+
+    fig.show()
+
+
+def chloroplot(root: str):
+    """Displays global chloropleth map representing percentage change of 'Root' over the years (2017-2020)
+
+    Sample Usage:
+    >>> chloroplot('gdp_')
+
+    """
+    countries = clean_data.populate_dictionary()[0]
+    codes = clean_data.populate_dictionary()[1]
+
+    data_so_far = []
+    for country in countries:
+        ordered_data = computations.get_percent_change_over_time(root, 2016, 2020, countries[country].name)
+        list.append(data_so_far, (codes[country], ordered_data[0][1], ordered_data[1][1], ordered_data[2][1],
+                                  ordered_data[3][1], countries[country].name))
+
+    yaxis_title = [word.capitalize() for word in (root.split('_'))]
+    yaxis_title = ' '.join(yaxis_title)
+
+    df = pd.DataFrame(data_so_far, columns=['Country Code', '2017', '2018', '2019', '2020', 'Country Name'])
+
+    fig = go.Figure(data=go.Choropleth(
+        locations=df['Country Code'],
+        z=df['2020'],
+        text=df['Country Name'],
+        colorscale='Blues',
+        autocolorscale=False,
+        reversescale=True,
+
+    ))
+
+    fig.update_layout(
+        title_text=f'2020 National {yaxis_title} Percentage Change',
+        geo=dict(
+            showframe=False,
+            showcoastlines=False,
+            projection_type='equirectangular'
+        )
     )
 
     fig.show()
@@ -311,3 +354,4 @@ def plot_percentage_change_cluster(root: str, year: int) -> None:
 #                       yaxis_title=title)
 #
 #     fig.show()
+
