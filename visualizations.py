@@ -77,16 +77,17 @@ def chloroplot(root: str):
     countries = clean_data.populate_dictionary()[0]
     codes = clean_data.populate_dictionary()[1]
 
+    yaxis_title = [word.capitalize() for word in (root.split('_'))]
+    yaxis_title = ' '.join(yaxis_title)
+
     data_so_far = []
     for country in countries:
 
-        if countries[country].name != 'Qatar':  # Qatar due to significant outlier
+        if countries[country].name != 'Qatar' and yaxis_title == 'Unemployment':
+            # removed Qatar due to significant outlier in unemployment data
             ordered_data = computations.get_percent_change_over_time(root, 2016, 2020, countries[country].name)
             list.append(data_so_far, (codes[country], ordered_data[0][1], ordered_data[1][1], ordered_data[2][1],
                                       ordered_data[3][1], countries[country].name))
-
-    yaxis_title = [word.capitalize() for word in (root.split('_'))]
-    yaxis_title = ' '.join(yaxis_title)
 
     df = pd.DataFrame(data_so_far, columns=['Country Code', '2017', '2018', '2019', '2020', 'Country Name'])
     fig = go.Figure()
@@ -276,7 +277,7 @@ def plot_percentage_change_cluster_overtime(root: str, start: int, end: int) -> 
                 {
                     'args': [None, {'frame': {'duration': 500, 'redraw': False},
                                     'fromcurrent': True, 'transition': {'duration': 300,
-                                                                    'easing': 'quadratic-in-out'}}],
+                                                                        'easing': 'quadratic-in-out'}}],
                     'label': 'Play',
                     'method': 'animate'
                 },
@@ -376,8 +377,8 @@ def plot_percentage_change_cluster_overtime(root: str, start: int, end: int) -> 
              'mode': 'immediate',
              'transition': {'duration': 300}}
         ],
-        'label': year,
-        'method': 'animate'}
+            'label': year,
+            'method': 'animate'}
         sliders_dict['steps'].append(slider_step)
 
     fig_dict['layout']['sliders'] = [sliders_dict]
@@ -385,7 +386,6 @@ def plot_percentage_change_cluster_overtime(root: str, start: int, end: int) -> 
     fig = go.Figure(fig_dict)
 
     fig.show()
-
 
 # def plot_cluster(root: str, year: int) -> None:
 #     """ Plot the desired attribute (root) on an xy-plane as (gdp, desired attribute). Cluster the
@@ -505,4 +505,3 @@ def plot_percentage_change_cluster_overtime(root: str, start: int, end: int) -> 
 #                       yaxis_title=title)
 #
 #     fig.show()
-
