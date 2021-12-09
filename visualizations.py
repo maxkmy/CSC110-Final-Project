@@ -182,7 +182,8 @@ def plot_percentage_change_cluster(root: str, year: int) -> None:
         ]
     )
 
-    title = ' '.join(root.split('_')) + 'in year ' + str(year)
+    title = ' '.join([word.capitalize() for word in root.split('_')])
+    title = title + 'Percent Change in Year' + str(year)
 
     # Configure the figure
     fig.update_layout(title=title,
