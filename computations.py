@@ -122,6 +122,24 @@ def get_attribute_by_gdp_quartile(root: str, year: int) -> list[list[tuple[int, 
     return cur
 
 
+def get_aggregate_quartile(root: str, desired_quartile: int, year: int) -> float:
+    """ Calculates the sum of the attribute in country_dict where the country is in the desired
+    quartile and the attribute is available(i.e. the attribute is not an empty string)
+    """
+    country_dict = clean_data()
+    # initialize accumulator
+    accum = 0
+    attr = root + str(year)
+    # iterate through every country in country_dict
+    for country in country_dict:
+        quartile = getattr(country_dict[country], f'gdp_quartile_{year}')
+        if desired_quartile == quartile:
+            to_add = getattr(country_dict[country], attr)
+            if to_add != '':
+                accum += to_add
+    return accum
+
+
 def get_xy_data(ordered_data: list[tuple[float, float]]) -> tuple[list[int], list[float]]:
     """Return a tuple of two parallel lists. The first list contains the first element of each
     element in ordered_data and the second list contains the second elemeent of each element
