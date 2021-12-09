@@ -16,7 +16,6 @@ def plot_percentage_change(root: str, start: int, end: int) -> None:
     Sample Usage:
     >>> plot_percentage_change('gdp_', 2016, 2020)
     >>> plot_percentage_change('unemployment_', 2016, 2020)
-
     """
     # get cleaned data
     country_dict = clean_data.clean_data()
@@ -38,7 +37,7 @@ def plot_percentage_change(root: str, start: int, end: int) -> None:
     yaxis_title = ' '.join(yaxis_title)
 
     # Configure the figure
-    fig.update_layout(title=f'Annual {yaxis_title} Percent Change of All Countries',
+    fig.update_layout(title=f'Annual {yaxis_title} Percent Change of Selected Countries',
                       xaxis_title='Year',
                       yaxis_title=f'{yaxis_title} Percentage Change')
 
@@ -64,5 +63,125 @@ def plot_percentage_change(root: str, start: int, end: int) -> None:
             buttons=buttons
         )]
     )
+
+    fig.show()
+
+
+def plot_cluster(root: str, year: int) -> None:
+    """ Plot the desired attribute (root) on an xy-plane as (gdp, desired attribute). Cluster the
+    points based on income quartile to observe trends
+
+    Preconditions:
+        - year > 0
+        - root != ''
+
+    Sample Usage:
+    >>> plot_cluster('gdp_', 2016)
+    >>> plot_cluster('unemployment_', 2020)
+    """
+    data = computations.get_attribute_by_income_group(root, year)
+    x_data = []
+    y_data = []
+    for i in range(4):
+        x_data_quartile, y_data_quartile = computations.get_xy_data(data[i])
+        x_data.append(x_data_quartile)
+        y_data.append(y_data_quartile)
+
+    # Create the figure
+    fig = go.Figure()
+
+    # set up colour of cluster for each income quartile
+    num_to_colour = {
+        0: 'DarkOrange',
+        1: 'Crimson',
+        2: 'RebeccaPurple',
+        3: 'DarkGreen'
+    }
+    num_to_income_group = {
+        0: 'High income',
+        1: 'Upper middle income',
+        2: 'Lower middle income',
+        3: 'Lower income'
+    }
+    # adding each cluster
+    for i in range(4):
+        fig.add_trace(
+            go.Scatter(
+                x=x_data[i],
+                y=y_data[i],
+                mode='markers',
+                marker=dict(color=num_to_colour[i]),
+                name=num_to_income_group[i]
+            )
+        )
+
+    # define each cluster
+    cluster0 = [dict(
+        type='circle',
+        xref='x', y_ref='y',
+        x0=min(x_data[0]), y0=min(y_data[0]),
+        x1=max(x_data[0]), y1=max(y_data[0]),
+        line=dict(color=num_to_colour[0])
+    )]
+
+    cluster1 = [dict(
+        type='circle',
+        xref='x', y_ref='y',
+        x0=min(x_data[1]), y0=min(y_data[1]),
+        x1=max(x_data[1]), y1=max(y_data[1]),
+        line=dict(color=num_to_colour[1])
+    )]
+
+    cluster2 = [dict(
+        type='circle',
+        xref='x', y_ref='y',
+        x0=min(x_data[2]), y0=min(y_data[2]),
+        x1=max(x_data[2]), y1=max(y_data[2]),
+        line=dict(color=num_to_colour[2])
+    )]
+
+    cluster3 = [dict(
+        type='circle',
+        xref='x', y_ref='y',
+        x0=min(x_data[3]), y0=min(y_data[3]),
+        x1=max(x_data[3]), y1=max(y_data[3]),
+        line=dict(color=num_to_colour[3])
+    )]
+
+    # add buttons that add the cluster circle
+    fig.update_layout(
+        updatemenus=[
+            dict(
+                type='buttons',
+                buttons=[
+                    dict(label='All',
+                         method='relayout',
+                         args=['shapes', [cluster0, cluster1, cluster2, cluster3]]),
+                    dict(label='None',
+                         method='relayout',
+                         args=['shapes', []]),
+                    dict(label='High income',
+                         method='relayout',
+                         args=['shapes', [cluster0]]),
+                    dict(label='Upper middle income',
+                         method='relayout',
+                         args=['shapes', [cluster1]]),
+                    dict(label='Lower middle income',
+                         method='relayout',
+                         args=['shapes', [cluster2]]),
+                    dict(label='Low income',
+                         method='relayout',
+                         args=['shapes', [cluster3]]),
+                ]
+            )
+        ]
+    )
+
+    title = ' '.join(root.split('_')) + 'in year ' + str(year)
+
+    # Configure the figure
+    fig.update_layout(title=title,
+                      xaxis_title=f'Gdp in year {year}',
+                      yaxis_title=title)
 
     fig.show()
