@@ -236,6 +236,139 @@ def plot_percentage_change_cluster(root: str, year: int) -> None:
     fig.show()
 
 
+def plot_percentage_change_cluster_overtime(root: str, start: int, end: int) -> None:
+    """ Plots percentage of the desired attribute from years start to end (inclusive).
+    """
+    country_dict = clean_data.clean_data()
+    years = list(range(start, end + 1))
+
+    fig_dict = {
+        'data': [],
+        'layout': {},
+        'frames': []
+    }
+
+    yaxis_title = ' '.join([word.capitalize() for word in root.split('_')]) + ' Percentage Change'
+    fig_dict['layout']['xaxis'] = {'title': 'GDP'}
+    fig_dict['layout']['yaxis'] = {'title': f'{yaxis_title}'}
+    fig_dict['layout']['hovermode'] = 'closest'
+    fig_dict['layout']['updatemenus'] = [
+        {
+            'buttons': [
+                {
+                    'args': [None, {'frame': {'duration': 500, 'redraw': False},
+                                    'fromcurrent': True, 'transition': {'duration': 300,
+                                                                    'easing': 'quadratic-in-out'}}],
+                    'label': 'Play',
+                    'method': 'animate'
+                },
+                {
+                    'args': [[None], {'frame': {'duration': 0, 'redraw': False},
+                                      'mode': 'immediate',
+                                      'transition': {'duration': 0}}],
+                    'label': 'Pause',
+                    'method': 'animate'
+                }
+            ],
+            'direction': 'left',
+            'pad': {'r': 10, 't': 87},
+            'showactive': False,
+            'type': 'buttons',
+            'x': 0.1,
+            'xanchor': 'right',
+            'y': 0,
+            'yanchor': 'top'
+        }
+    ]
+
+    sliders_dict = {
+        'active': 0,
+        'yanchor': 'top',
+        'xanchor': 'left',
+        'currentvalue': {
+            'font': {'size': 20},
+            'prefix': 'Year:',
+            'visible': True,
+            'xanchor': 'right',
+        },
+        'transition': {'duration': 300, 'easing': 'cubic-in-out'},
+        'pad': {'b': 10, 't': 50},
+        'len': 0.9,
+        'x': 0.1,
+        'y': 0,
+        'steps': []
+    }
+
+    num_to_colour = {
+        1: 'DarkOrange',
+        2: 'Crimson',
+        3: 'RebeccaPurple',
+        4: 'DarkGreen'
+    }
+    num_to_quartile = {
+        1: 'Low GDP',
+        2: 'Lower Middle GDP',
+        3: 'Upper Middle GDP',
+        4: 'High GDP'
+    }
+
+    year = start
+    for country in country_dict:
+        quartile = getattr(country_dict[country], f'gdp_quartile_{year}')
+        gdp = getattr(country_dict[country], f'gdp_{year}')
+        percentage_change = computations.get_percent_change(root, str(year), str(year - 1), country)
+        if type(gdp) != float or type(percentage_change) != float:
+            continue
+
+        data_dict = {
+            'x': [gdp],
+            'y': [percentage_change],
+            'mode': 'markers',
+            'text': country,
+            'marker': {
+                'color': num_to_colour[quartile]
+            }
+        }
+
+        fig_dict['data'].append(data_dict)
+
+    for year in years:
+        frame = {'data': [], 'name': str(year)}
+        for country in country_dict:
+            quartile = getattr(country_dict[country], f'gdp_quartile_{year}')
+            gdp = getattr(country_dict[country], f'gdp_{year}')
+            percentage_change = computations.get_percent_change(root, str(year), str(year - 1), country)
+            if type(gdp) != float or type(percentage_change) != float:
+                continue
+
+            data_dict = {
+                'x': [gdp],
+                'y': [percentage_change],
+                'mode': 'markers',
+                'text': country,
+                'marker': {
+                    'color': num_to_colour[quartile]
+                }
+            }
+            frame['data'].append(data_dict)
+        fig_dict['frames'].append(frame)
+        slider_step = {'args': [
+            [year],
+            {'frame': {'duration': 300, 'redraw': False},
+             'mode': 'immediate',
+             'transition': {'duration': 300}}
+        ],
+        'label': year,
+        'method': 'animate'}
+        sliders_dict['steps'].append(slider_step)
+
+    fig_dict['layout']['sliders'] = [sliders_dict]
+
+    fig = go.Figure(fig_dict)
+
+    fig.show()
+
+
 # def plot_cluster(root: str, year: int) -> None:
 #     """ Plot the desired attribute (root) on an xy-plane as (gdp, desired attribute). Cluster the
 #     points based on income quartile to observe trends
