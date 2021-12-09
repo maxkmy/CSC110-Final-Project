@@ -79,7 +79,7 @@ def plot_cluster(root: str, year: int) -> None:
     >>> plot_cluster('gdp_', 2016)
     >>> plot_cluster('unemployment_', 2020)
     """
-    data = computations.get_attribute_by_income_group(root, year)
+    data = computations.get_attribute_by_gdp_quartile(root, year)
     x_data = []
     y_data = []
     for i in range(4):
@@ -92,16 +92,16 @@ def plot_cluster(root: str, year: int) -> None:
 
     # set up colour of cluster for each income quartile
     num_to_colour = {
-        0: 'DarkOrange',
-        1: 'Crimson',
-        2: 'RebeccaPurple',
-        3: 'DarkGreen'
+        1: 'DarkOrange',
+        2: 'Crimson',
+        3: 'RebeccaPurple',
+        4: 'DarkGreen'
     }
-    num_to_income_group = {
-        0: 'High income',
-        1: 'Upper middle income',
-        2: 'Lower middle income',
-        3: 'Lower income'
+    num_to_quartile = {
+        1: 'Low GDP',
+        2: 'Lower Middle GDP',
+        3: 'Upper Middle GDP',
+        4: 'High GDP'
     }
     # adding each cluster
     for i in range(4):
@@ -110,8 +110,8 @@ def plot_cluster(root: str, year: int) -> None:
                 x=x_data[i],
                 y=y_data[i],
                 mode='markers',
-                marker=dict(color=num_to_colour[i]),
-                name=num_to_income_group[i]
+                marker=dict(color=num_to_colour[i + 1]),
+                name=num_to_quartile[i + 1]
             )
         )
 
@@ -121,7 +121,7 @@ def plot_cluster(root: str, year: int) -> None:
         xref='x', y_ref='y',
         x0=min(x_data[0]), y0=min(y_data[0]),
         x1=max(x_data[0]), y1=max(y_data[0]),
-        line=dict(color=num_to_colour[0])
+        line=dict(color=num_to_colour[1])
     )]
 
     cluster1 = [dict(
@@ -129,7 +129,7 @@ def plot_cluster(root: str, year: int) -> None:
         xref='x', y_ref='y',
         x0=min(x_data[1]), y0=min(y_data[1]),
         x1=max(x_data[1]), y1=max(y_data[1]),
-        line=dict(color=num_to_colour[1])
+        line=dict(color=num_to_colour[2])
     )]
 
     cluster2 = [dict(
@@ -137,7 +137,7 @@ def plot_cluster(root: str, year: int) -> None:
         xref='x', y_ref='y',
         x0=min(x_data[2]), y0=min(y_data[2]),
         x1=max(x_data[2]), y1=max(y_data[2]),
-        line=dict(color=num_to_colour[2])
+        line=dict(color=num_to_colour[3])
     )]
 
     cluster3 = [dict(
@@ -145,7 +145,7 @@ def plot_cluster(root: str, year: int) -> None:
         xref='x', y_ref='y',
         x0=min(x_data[3]), y0=min(y_data[3]),
         x1=max(x_data[3]), y1=max(y_data[3]),
-        line=dict(color=num_to_colour[3])
+        line=dict(color=num_to_colour[4])
     )]
 
     # add buttons that add the cluster circle

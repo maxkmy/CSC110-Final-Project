@@ -4,14 +4,13 @@
 from clean_data import clean_data
 import math
 
-country_dict = clean_data()
-
 
 def get_percent_change(root: str, new_attr_suffix: str, old_attr_suffix, country: str) -> float:
     """ Calculates the percent change between the attributes root + new_attr_suffix and
     root + old_attr_suffix
     """
     # retrieve the country instance
+    country_dict = clean_data()
     country = country_dict[country]
     # assign new_attr and old_attr
     new_attr = root + new_attr_suffix
@@ -47,6 +46,7 @@ def get_aggregate(attribute: str) -> float:
     """ Calculates the sum of the attribute in country_dict where the attribute is available
     (i.e. the attribute is not an empty string)
     """
+    country_dict = clean_data()
     # initialize accumulator
     accum = 0
     # iterate through every country in country_dict
@@ -64,6 +64,7 @@ def get_percent_of_aggregate(aggregate: float, attr: str, country: str) -> float
     """ Returns the percentage the attribute takes up of the aggregate for a given country.
     If the country does not have the attribute, return float('nan') (Not a number)
     """
+    country_dict = clean_data()
     # get the attribute from country's Country instance
     portion = getattr(country_dict[country], attr)
     # if the attribute is available, return the percent it takes up from aggregate
@@ -78,6 +79,7 @@ def get_percent_of_whole_all_countries(attr: str) -> dict[str, float]:
     countries. If the country does not have the attribute, return float('nan') (Not a number).
     The return type is a dict where a country's name maps to its percentage of whole
     """
+    country_dict = clean_data()
     # initialize the accumulator
     country_to_percent_of_aggregate = {}
     # calculate the aggregate for the given attribute
@@ -93,7 +95,7 @@ def get_percent_of_whole_all_countries(attr: str) -> dict[str, float]:
     return country_to_percent_of_aggregate
 
 
-def get_attribute_by_income_group(root: str, year: int) -> list[list[tuple[int, int]],
+def get_attribute_by_gdp_quartile(root: str, year: int) -> list[list[tuple[int, int]],
                             list[tuple[int, int]], list[tuple[int, int]], list[tuple[int, int]]]:
     """
     Returns a list of 4 lists. Each of the 4 lists contain lists with 2 elements, in the form
@@ -102,20 +104,20 @@ def get_attribute_by_income_group(root: str, year: int) -> list[list[tuple[int, 
     country_dict = clean_data()
     cur = [[], [], [], []]
     attr = root + str(year)
-    gdp_attr = 'gdp_' + str(year)
+    gdp_quartile = 'gdp_quartile_' + str(year)
     for country in country_dict:
-        gdp = getattr(country_dict[country], gdp_attr)
+        gdp = getattr(country_dict[country], f'gdp_{year}')
         attr_val = getattr(country_dict[country], attr)
         if type(attr_val) != float or type(gdp) != float:
             continue
-        income_group = country_dict[country].income_group
-        if income_group == 'High income':
+        quartile = getattr(country_dict[country], gdp_quartile)
+        if quartile == 1:
             cur[0].append((gdp, attr_val))
-        elif income_group == 'Upper middle income':
+        elif quartile == 2:
             cur[1].append((gdp, attr_val))
-        elif income_group == 'Lower middle income':
+        elif quartile == 3:
             cur[2].append((gdp, attr_val))
-        else:
+        elif quartile == 4:
             cur[3].append((gdp, attr_val))
     return cur
 
@@ -138,3 +140,49 @@ def get_xy_data(ordered_data: list[tuple[float, float]]) -> tuple[list[int], lis
         list.append(year_so_far, put[0])
         list.append(data_so_far, put[1])
     return year_so_far, data_so_far
+
+
+# def get_median(data: list[float, str], start: int, end: int) -> float:
+#     """ Return the median of the subarray data[start:end]
+#     """
+#     length = end - start
+#     if length % 2 == 0:
+#         mid1 = start + math.floor(length / 2)
+#         mid2 = start + math.ceil(length / 2)
+#         median = (data[mid1] + data[mid2]) / 2
+#     else:
+#         mid = start + length // 2
+#         median = data[mid]
+#     return median
+#
+#
+# def get_quartile_split(root: str, year: int) -> tuple[set[str], set[str], set[str], set[str]]:
+#     """ Returns a list of 4 sets where each set contains name of countries in each quartile
+#     for the given attribute (root + year)
+#     """
+#     attr = root + str(year)
+#     country_dict = clean_data()
+#     data = []
+#     for country in country_dict:
+#         val = getattr(country_dict[country], attr)
+#         if type(val) == float:
+#             data.append(val)
+#     data.sort()
+#     median = get_median(data, 0, len(data))
+#     mid = len(data) // 2
+#     lower_half_median = get_median(data, 0, mid)
+#     upper_half_median = get_median(data, mid + len(data) % 2, len(data))
+#
+#     quartile1, quartile2, quartile3, quartile4 = set(), set(), set(), set()
+#
+#     for country in country_dict:
+#         val = getattr(country_dict[country], attr)
+#         if val <= lower_half_median:
+#             quartile1.add(country)
+#         elif val <= median:
+#             quartile2.add(country)
+#         elif val <= upper_half_median:
+#             quartile3.add(country)
+#         else:
+#             quartile4.add(country)
+#     return quartile1, quartile2, quartile3, quartile4

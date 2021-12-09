@@ -57,7 +57,11 @@ class Country:
         self.gdp_2019 = None
         self.gdp_2020 = None
 
-        self.income_group = None
+        self.gdp_quartile_2016 = None
+        self.gdp_quartile_2017 = None
+        self.gdp_quartile_2018 = None
+        self.gdp_quartile_2019 = None
+        self.gdp_quartile_2020 = None
 
         self.gdp_manufacturing_2016 = None
         self.gdp_service_2016 = None
@@ -90,13 +94,12 @@ class Country:
         return self.name
 
 
-def populate_dictionary() -> tuple[dict[str, str], dict[str, Country]]:
+def populate_dictionary() -> dict[str, Country]:
     """ Return a tuple of dictionary. The first dictionary maps the country code to a country name
     and the second dictionary maps the country name to a Country instance.
     """
     # initialize accumulators
     country_dict = {}
-    code_to_country = {}
     # open csv file
     with open('raw_data/national_gdp.csv') as file:
         reader = csv.reader(file, delimiter=',')
@@ -110,9 +113,8 @@ def populate_dictionary() -> tuple[dict[str, str], dict[str, Country]]:
             code = row[1]
             # map the name to a Country instance and the code to the name
             country_dict[name] = Country(name)
-            code_to_country[code] = name
     # return both accumulators
-    return code_to_country, country_dict
+    return country_dict
 
 
 def populate_attribute_name(country_dict: dict, filename: str, lines: int, attributes: [str],
@@ -141,32 +143,6 @@ def populate_attribute_name(country_dict: dict, filename: str, lines: int, attri
                         setattr(country_dict[country], attributes[i], (row[columns[i]]))
 
 
-def populate_attribute_code(country_dict: dict, code_to_country: dict, filename: str, lines: int,
-                            attributes: [str], columns: [int], code_col: int) -> None:
-    """ Populate the attributes of Country instance attribute where csv file contains the country
-    code.
-    """
-    # open csv file
-    with open(filename) as file:
-        reader = csv.reader(file, delimiter=',')
-        # skip the first 'lines' lines
-        for _ in range(lines):
-            next(reader)
-        # iterate through all the remaining rows
-        for row in reader:
-            # get the country's code and map the code to the name
-            country = code_to_country[row[code_col]]
-            # check country is in country_dict
-            if country in country_dict:
-                # iterate through all attributes and their respective columns
-                for i in range(len(attributes)):
-                    # convert data in csv file to float if possible, else keep as string
-                    try:
-                        setattr(country_dict[country], attributes[i], float(row[columns[i]]))
-                    except ValueError:
-                        setattr(country_dict[country], attributes[i], (row[columns[i]]))
-
-
 def get_national_gdp(country_dict: dict) -> None:
     """ Retrieve national gdp data from national_gdp.csv
     """
@@ -174,15 +150,6 @@ def get_national_gdp(country_dict: dict) -> None:
     attributes = ['gdp_2016', 'gdp_2017', 'gdp_2018', 'gdp_2019', 'gdp_2020']
     columns = [-5, -4, -3, -2, -1]
     populate_attribute_name(country_dict, filename, 4, attributes, columns, 0)
-
-
-def get_income_group(country_dict: dict, code_to_country: dict) -> None:
-    """ Retrieve income quartile data from country_income_quartile.csv
-    """
-    filename = 'raw_data/country_income_quartile.csv'
-    attributes = ['income_group']
-    columns = [2]
-    populate_attribute_code(country_dict, code_to_country, filename, 1, attributes, columns, 0)
 
 
 def get_sector_gdp(country_dict: dict) -> None:
@@ -214,14 +181,65 @@ def get_unemployment(country_dict: dict) -> None:
     populate_attribute_name(country_dict, filename, 4, attributes, columns, 0)
 
 
+def get_gdp_quartile(country_dict: dict[str, Country]) -> None:
+    """ Assign each country to a gdp_quartile for years 2016 to 2020
+    """
+    for year in range(2016, 2021):
+        get_quartile_split(country_dict, 'gdp_', year)
+
+
+def get_median(data: list[float], start: int, end: int) -> float:
+    """ Return the median of the subarray data[start:end]
+    """
+    length = end - start
+    if length % 2 == 0:
+        mid1 = start + length // 2
+        mid2 = start + length // 2 + 1
+        median = (data[mid1] + data[mid2]) / 2
+    else:
+        mid = start + length // 2
+        median = data[mid]
+    return median
+
+
+def get_quartile_split(country_dict: [str, Country], root: str, year: int) -> None:
+    """ Returns a list of 4 sets where each set contains name of countries in each quartile
+    for the given attribute (root + year)
+    """
+    attr = root + str(year)
+    data = []
+    for country in country_dict:
+        val = getattr(country_dict[country], attr)
+        if type(val) == float:
+            data.append(val)
+    data.sort()
+    median = get_median(data, 0, len(data))
+    mid = len(data) // 2
+    lower_half_median = get_median(data, 0, mid)
+    upper_half_median = get_median(data, mid + len(data) % 2, len(data))
+
+    for country in country_dict:
+        val = getattr(country_dict[country], attr)
+        if type(val) != float:
+            continue
+        if val <= lower_half_median:
+            setattr(country_dict[country], f'gdp_quartile_{year}', 1)
+        elif val <= median:
+            setattr(country_dict[country], f'gdp_quartile_{year}', 2)
+        elif val <= upper_half_median:
+            setattr(country_dict[country], f'gdp_quartile_{year}', 3)
+        else:
+            setattr(country_dict[country], f'gdp_quartile_{year}', 4)
+
+
 def clean_data() -> dict[str, Country]:
     """ Main method that contains helper function calls to clean data
     """
     # populate the dictionary with country names and Country instances
-    code_to_country, country_dict = populate_dictionary()
+    country_dict = populate_dictionary()
     # get required attributes from csv files
     get_national_gdp(country_dict)
-    get_income_group(country_dict, code_to_country)
+    get_gdp_quartile(country_dict)
     get_sector_gdp(country_dict)
     get_unemployment(country_dict)
     # return cleaned data
