@@ -88,22 +88,27 @@ def chloroplot(root: str):
 
     df = pd.DataFrame(data_so_far, columns=['Country Code', '2017', '2018', '2019', '2020', 'Country Name'])
     fig = go.Figure()
-    fig.add_trace(go.Choropleth(
-        locations=df['Country Code'],
-        z=df['2020'],
-        text=df['Country Name'],
-        colorscale='Blues',
-        autocolorscale=False,
-        reversescale=True, )
-    )
+
+    fig.update_layout(title=f'{yaxis_title} Percent Change of Countries in  {2017}')
+
     buttons = []
 
     for i in range(4):
+        year = str(2017 + i)
+        fig.add_trace(go.Choropleth(
+            locations=df['Country Code'],
+            z=df[year],
+            text=df['Country Name'],
+            colorscale='Blues',
+            autocolorscale=False,
+            reversescale=True, )
+        )
+
         buttons.append(dict(
-            label=(str(2017 + i)),
+            label=(year),
             method='update',
             args=[{'visible': [x == i for x in range(4)]},
-                  {'title': f'{yaxis_title} Percent Change of Countries in  {str(2017 + i)}',
+                  {'title': f'{yaxis_title} Percent Change of Countries in  {year}',
                    'showlegend': True}]))
 
     fig.update_layout(
