@@ -116,7 +116,7 @@ def plot_cluster(root: str, year: int) -> None:
         )
 
     # define each cluster
-    cluster0 = [dict(
+    cluster1 = [dict(
         type='circle',
         xref='x', y_ref='y',
         x0=min(x_data[0]), y0=min(y_data[0]),
@@ -124,7 +124,7 @@ def plot_cluster(root: str, year: int) -> None:
         line=dict(color=num_to_colour[1])
     )]
 
-    cluster1 = [dict(
+    cluster2 = [dict(
         type='circle',
         xref='x', y_ref='y',
         x0=min(x_data[1]), y0=min(y_data[1]),
@@ -132,7 +132,7 @@ def plot_cluster(root: str, year: int) -> None:
         line=dict(color=num_to_colour[2])
     )]
 
-    cluster2 = [dict(
+    cluster3 = [dict(
         type='circle',
         xref='x', y_ref='y',
         x0=min(x_data[2]), y0=min(y_data[2]),
@@ -140,7 +140,7 @@ def plot_cluster(root: str, year: int) -> None:
         line=dict(color=num_to_colour[3])
     )]
 
-    cluster3 = [dict(
+    cluster4 = [dict(
         type='circle',
         xref='x', y_ref='y',
         x0=min(x_data[3]), y0=min(y_data[3]),
@@ -156,22 +156,22 @@ def plot_cluster(root: str, year: int) -> None:
                 buttons=[
                     dict(label='All',
                          method='relayout',
-                         args=['shapes', [cluster0, cluster1, cluster2, cluster3]]),
+                         args=['shapes', cluster1 + cluster2 + cluster3 + cluster4]),
                     dict(label='None',
                          method='relayout',
                          args=['shapes', []]),
-                    dict(label='High income',
+                    dict(label='High GDP',
                          method='relayout',
-                         args=['shapes', [cluster0]]),
-                    dict(label='Upper middle income',
+                         args=['shapes', cluster4]),
+                    dict(label='Upper Middle GDP',
                          method='relayout',
-                         args=['shapes', [cluster1]]),
-                    dict(label='Lower middle income',
+                         args=['shapes', cluster3]),
+                    dict(label='Lower Middle GDP',
                          method='relayout',
-                         args=['shapes', [cluster2]]),
-                    dict(label='Low income',
+                         args=['shapes', cluster2]),
+                    dict(label='Low GDP',
                          method='relayout',
-                         args=['shapes', [cluster3]]),
+                         args=['shapes', cluster1])
                 ]
             )
         ]
