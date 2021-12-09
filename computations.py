@@ -20,7 +20,9 @@ def get_percent_change(root: str, new_attr_suffix: str, old_attr_suffix, country
     new = getattr(country, new_attr)
     old = getattr(country, old_attr)
     # return percentage change
-    return (new - old) / old * 100
+    if type(old) == float and type(new) == float:
+        return (new - old) / old * 100
+    return float('nan')
 
 
 def get_percent_change_over_time(root: str, start: int, end: int, country: str) -> \
@@ -91,8 +93,8 @@ def get_percent_of_whole_all_countries(attr: str) -> dict[str, float]:
     return country_to_percent_of_aggregate
 
 
-def get_attribute_by_income_group(root: str, year: int) -> list[list[list[int, int]],
-                            list[list[int, int]], list[list[int, int]], list[list[int, int]]]:
+def get_attribute_by_income_group(root: str, year: int) -> list[list[tuple[int, int]],
+                            list[tuple[int, int]], list[tuple[int, int]], list[tuple[int, int]]]:
     """
     Returns a list of 4 lists. Each of the 4 lists contain lists with 2 elements, in the form
     (gdp, attribute) where the attribute is root + year.
@@ -102,23 +104,23 @@ def get_attribute_by_income_group(root: str, year: int) -> list[list[list[int, i
     attr = root + str(year)
     gdp_attr = 'gdp_' + str(year)
     for country in country_dict:
-        if math.isnan(getattr(country, attr)):
+        gdp = getattr(country_dict[country], gdp_attr)
+        attr_val = getattr(country_dict[country], attr)
+        if type(attr_val) != float or type(gdp) != float:
             continue
         income_group = country_dict[country].income_group
-        gdp = getattr(country, gdp_attr)
-        attr_val = getattr(country, attr)
         if income_group == 'High income':
-            cur[0].append([gdp, attr_val])
-        elif income_group == 'Low income':
-            cur[1].append([gdp, attr_val])
+            cur[0].append((gdp, attr_val))
+        elif income_group == 'Upper middle income':
+            cur[1].append((gdp, attr_val))
         elif income_group == 'Lower middle income':
-            cur[2].append([gdp, attr_val])
+            cur[2].append((gdp, attr_val))
         else:
-            cur[3].append([gdp, attr_val])
+            cur[3].append((gdp, attr_val))
     return cur
 
 
-def get_xy_data(ordered_data: list[tuple[int, float]]) -> tuple[list[int], list[float]]:
+def get_xy_data(ordered_data: list[tuple[float, float]]) -> tuple[list[int], list[float]]:
     """Return a tuple of two parallel lists. The first list contains the first element of each
     element in ordered_data and the second list contains the second elemeent of each element
     in ordered_data
