@@ -67,12 +67,12 @@ def plot_percentage_change(root: str, start: int, end: int) -> None:
     fig.show()
 
 
-def chloroplot(root: str):
+def chloropleth_percent_change(root: str):
     """Displays global chloropleth map representing percentage change of 'Root' over the years (2017-2020)
 
     Sample Usage:
-    >>> chloroplot('gdp_')
-    >>> chloroplot('unemployment_')
+    >>> chloropleth_percent_change('gdp_')
+    >>> chloropleth_percent_change('unemployment_')
     """
     countries = clean_data.populate_dictionary()[0]
     codes = clean_data.populate_dictionary()[1]
