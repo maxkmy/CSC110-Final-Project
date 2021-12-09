@@ -91,10 +91,37 @@ def get_percent_of_whole_all_countries(attr: str) -> dict[str, float]:
     return country_to_percent_of_aggregate
 
 
+def get_attribute_by_income_group(root: str, year: int) -> list[list[list[int, int]],
+                            list[list[int, int]], list[list[int, int]], list[list[int, int]]]:
+    """
+    Returns a list of 4 lists. Each of the 4 lists contain lists with 2 elements, in the form
+    (gdp, attribute) where the attribute is root + year.
+    """
+    country_dict = clean_data()
+    cur = [[], [], [], []]
+    attr = root + str(year)
+    gdp_attr = 'gdp_' + str(year)
+    for country in country_dict:
+        if math.isnan(getattr(country, attr)):
+            continue
+        income_group = country_dict[country].income_group
+        gdp = getattr(country, gdp_attr)
+        attr_val = getattr(country, attr)
+        if income_group == 'High income':
+            cur[0].append([gdp, attr_val])
+        elif income_group == 'Low income':
+            cur[1].append([gdp, attr_val])
+        elif income_group == 'Lower middle income':
+            cur[2].append([gdp, attr_val])
+        else:
+            cur[3].append([gdp, attr_val])
+    return cur
+
+
 def get_xy_data(ordered_data: list[tuple[int, float]]) -> tuple[list[int], list[float]]:
-    """Return a tuple of two parallel lists. The first list contains the keys of outputs as
-        ints representing the year. The second list contains the corresponding value of
-        the attribute of the specific metric for data (gdp or unemployment % change)
+    """Return a tuple of two parallel lists. The first list contains the first element of each
+    element in ordered_data and the second list contains the second elemeent of each element
+    in ordered_data
 
     >>> data = [(2016, 4.5), (2017, 8.8) ,(2018, 12.4) ,(2019, 17.8) ,(2020, 40.2)]
     >>> get_xy_data(data)
