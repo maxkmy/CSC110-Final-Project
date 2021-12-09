@@ -72,16 +72,18 @@ def chloroplot(root: str):
 
     Sample Usage:
     >>> chloroplot('gdp_')
-
+    >>> chloroplot('unemployment_')
     """
     countries = clean_data.populate_dictionary()[0]
     codes = clean_data.populate_dictionary()[1]
 
     data_so_far = []
     for country in countries:
-        ordered_data = computations.get_percent_change_over_time(root, 2016, 2020, countries[country].name)
-        list.append(data_so_far, (codes[country], ordered_data[0][1], ordered_data[1][1], ordered_data[2][1],
-                                  ordered_data[3][1], countries[country].name))
+
+        if countries[country].name != 'Qatar':  # Qatar due to significant outlier
+            ordered_data = computations.get_percent_change_over_time(root, 2016, 2020, countries[country].name)
+            list.append(data_so_far, (codes[country], ordered_data[0][1], ordered_data[1][1], ordered_data[2][1],
+                                      ordered_data[3][1], countries[country].name))
 
     yaxis_title = [word.capitalize() for word in (root.split('_'))]
     yaxis_title = ' '.join(yaxis_title)
