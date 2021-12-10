@@ -54,7 +54,7 @@ def get_aggregate(attribute: str) -> float:
         # retrieve attribute from the country's Country instance
         to_add = getattr(country_dict[country], attribute)
         # if the attribute is available, add it to the accumulator
-        if to_add != '':
+        if type(to_add) == float:
             accum += to_add
     # return the accumulator
     return accum
