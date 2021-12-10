@@ -75,8 +75,7 @@ def choropleth_percentage_change(root: str):
     >>> choropleth_percentage_change('gdp_')
     >>> choropleth_percentage_change('unemployment_')
     """
-    countries = clean_data.populate_dictionary()[0]
-    codes = clean_data.populate_dictionary()[1]
+    countries, codes = clean_data.populate_dictionary()
 
     data_so_far = []
     for country in countries:
@@ -131,15 +130,15 @@ def choropleth_percentage_change(root: str):
 
 
 def choropleth_percentage_change_slide(root: str):
-    """Displays global chloropleth map representing percentage change of 'Root' over the years (2017-2020) with built-in time slider
+    """Displays global chloropleth map representing percentage change of 'Root' over the years
+    (2017-2020) with built-in time slider.
 
     Sample Usage:
     >>> choropleth_percentage_change_slide('gdp_')
     >>> choropleth_percentage_change_slide('unemployment_')
 
     """
-    countries = clean_data.populate_dictionary()[0]
-    codes = clean_data.populate_dictionary()[1]
+    countries, codes = clean_data.populate_dictionary()
     countries.pop('Qatar')
 
     yaxis_title = [word.capitalize() for word in (root.split('_'))]
@@ -160,7 +159,7 @@ def choropleth_percentage_change_slide(root: str):
     fig.show()
 
 
-def choropleth_percent_wholegdp():
+def choropleth_percent_wholegdp() -> None:
     """ Displays percentage national GDP of a country to global total GDP
 
     Sample Usage:
@@ -238,9 +237,7 @@ def choropleth_percent_wholegdp_slide():
     Sample Usage:
     >>> choropleth_percent_wholegdp_slide()
     """
-
-    countries = clean_data.populate_dictionary()[0]
-    codes = clean_data.populate_dictionary()[1]
+    countries, codes = clean_data.populate_dictionary()
 
     data2016 = computations.get_percent_of_whole_all_countries('gdp_2016')
     data2017 = computations.get_percent_of_whole_all_countries('gdp_2017')
@@ -252,11 +249,11 @@ def choropleth_percent_wholegdp_slide():
     for country in countries:
         key = country
         if key in data2016 and key in data2017 and key in data2018 and key in data2019 and key in data2020:
-            list.append(data_so_far, (codes[country], 2016, data2016[key], countries[country].name))
-            list.append(data_so_far, (codes[country], 2017, data2017[key], countries[country].name))
-            list.append(data_so_far, (codes[country], 2018, data2018[key], countries[country].name))
-            list.append(data_so_far, (codes[country], 2019, data2019[key], countries[country].name))
-            list.append(data_so_far, (codes[country], 2020, data2020[key], countries[country].name))
+            data_so_far.append((codes[country], 2016, data2016[key], countries[country].name))
+            data_so_far.append((codes[country], 2017, data2017[key], countries[country].name))
+            data_so_far.append((codes[country], 2018, data2018[key], countries[country].name))
+            data_so_far.append((codes[country], 2019, data2019[key], countries[country].name))
+            data_so_far.append((codes[country], 2020, data2020[key], countries[country].name))
 
     gapminder = pd.DataFrame(data_so_far, columns=['Country Code', 'Year', 'Data', 'Country Name'])
 
