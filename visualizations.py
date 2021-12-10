@@ -143,11 +143,11 @@ def choropleth_percent_wholegdp_slide() -> None:
     fig.show()
 
 
-def choropleth_percent_change_wholegdp(start: str, end: str):
+def choropleth_percent_difference_wholegdp(start: str, end: str):
     """ Displays percentage national GDP of a country to global total GDP
 
     Sample Usage:
-    >>> choropleth_percent_change_wholegdp('2016', '2020')
+    >>> choropleth_percent_difference_wholegdp('2016', '2020')
     """
     root = 'gdp_'
     countries = clean_data.populate_dictionary()[0]
@@ -162,7 +162,7 @@ def choropleth_percent_change_wholegdp(start: str, end: str):
     for country in countries:
         key = country
         if key in datastart and key in dataend:
-            data = computations.get_percent_change('gdp_', start, end, key)
+            data = dataend[key] - datastart[key]
             list.append(data_so_far, (codes[country], data, countries[country].name))
 
     yaxis_title = [word.capitalize() for word in (root.split('_'))]
@@ -171,7 +171,7 @@ def choropleth_percent_change_wholegdp(start: str, end: str):
     df = pd.DataFrame(data_so_far, columns=['Country Code', 'Change', 'Country Name'])
     fig = go.Figure()
 
-    fig.update_layout(title=f'{yaxis_title} Global GDP Percentage Change of Countries Between {start} and {end}')
+    fig.update_layout(title=f'{yaxis_title} Global GDP Percentage Difference of Countries Between {start} and {end}')
 
     fig.add_trace(go.Choropleth(
         locations=df['Country Code'],
@@ -180,7 +180,7 @@ def choropleth_percent_change_wholegdp(start: str, end: str):
         colorscale='RdBu',
         autocolorscale=False,
         reversescale=True,
-        colorbar={"title": 'Percentage Change %'})
+        colorbar={"title": 'Percentage Difference %'})
     )
 
     fig.update_layout(
