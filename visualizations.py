@@ -110,36 +110,30 @@ def choropleth_percent_wholegdp() -> None:
     fig.show()
 
 
-def choropleth_percent_wholegdp_slide() -> None:
+def choropleth_percent_wholegdp_slider(start: int, end: int) -> None:
     """ Displays percentage national GDP of a country to global total GDP with built-in time slider
-
+    where the years range from start to end inclusive
     Sample Usage:
-    >>> choropleth_percent_wholegdp_slide()
+    >>> choropleth_percent_wholegdp_slider(2016, 2020)
     """
     countries, codes = clean_data.populate_dictionary()
 
-    data2016 = computations.get_percent_of_whole_all_countries('gdp_2016')
-    data2017 = computations.get_percent_of_whole_all_countries('gdp_2017')
-    data2018 = computations.get_percent_of_whole_all_countries('gdp_2018')
-    data2019 = computations.get_percent_of_whole_all_countries('gdp_2019')
-    data2020 = computations.get_percent_of_whole_all_countries('gdp_2020')
+    data = []
+    for year in range(start, end + 1):
+        data.append(computations.get_percent_of_whole_all_countries(f'gdp_{year}'))
 
     data_so_far = []
     for country in countries:
-        key = country
-        if key in data2016 and key in data2017 and key in data2018 and key in data2019 and key in data2020:
-            data_so_far.append((codes[country], 2016, data2016[key], countries[country].name))
-            data_so_far.append((codes[country], 2017, data2017[key], countries[country].name))
-            data_so_far.append((codes[country], 2018, data2018[key], countries[country].name))
-            data_so_far.append((codes[country], 2019, data2019[key], countries[country].name))
-            data_so_far.append((codes[country], 2020, data2020[key], countries[country].name))
+        if all(country in data[year] for year in range(len(data))):
+            for year in range(start, end + 1):
+                data_so_far.append((codes[country], year, data[year - start][country], country))
 
     gapminder = pd.DataFrame(data_so_far, columns=['Country Code', 'Year', 'Data', 'Country Name'])
 
     fig = px.choropleth(gapminder, locations='Country Code', color='Data', hover_name='Country Name',
                         animation_frame='Year', range_color=[0, 3], color_continuous_scale=px.colors.sequential.Agsunset,
                         projection='natural earth')
-    fig.update_layout(title=f'Global GDP Percentage of Countries Throughout Years (2016-2020)')
+    fig.update_layout(title=f'Global GDP Percentage of Countries Throughout Years ({start}-{end})')
     fig.show()
 
 
