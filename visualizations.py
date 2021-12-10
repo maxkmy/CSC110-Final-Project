@@ -101,7 +101,7 @@ def choropleth_percentage_change(root: str):
             locations=df['Country Code'],
             z=df[year],
             text=df['Country Name'],
-            colorscale='Blues',
+            colorscale='RdBu',
             autocolorscale=False,
             reversescale=True,
             colorbar={"title": 'Percentage Change'})
@@ -153,7 +153,7 @@ def choropleth_percentage_change_slide(root: str):
     gapminder = pd.DataFrame(data_so_far, columns=['Country Code', 'Year', 'Data', 'Country Name'])
 
     fig = px.choropleth(gapminder, locations='Country Code', color='Data', hover_name='Country Name',
-                        animation_frame='Year', color_continuous_scale=px.colors.sequential.Blues,
+                        animation_frame='Year', color_continuous_scale=px.colors.sequential.RdBu,
                         projection='natural earth')
     fig.update_layout(title=f'{yaxis_title} Percent Change of Countries Through Years (2017-2020)')
     fig.show()
@@ -201,7 +201,7 @@ def choropleth_percent_wholegdp() -> None:
             locations=df['Country Code'],
             z=df[year],
             text=df['Country Name'],
-            colorscale='Blues',
+            colorscale='Agsunset',
             autocolorscale=False,
             reversescale=True,
             zmin=0,
@@ -258,9 +258,60 @@ def choropleth_percent_wholegdp_slide() -> None:
     gapminder = pd.DataFrame(data_so_far, columns=['Country Code', 'Year', 'Data', 'Country Name'])
 
     fig = px.choropleth(gapminder, locations='Country Code', color='Data', hover_name='Country Name',
-                        animation_frame='Year', range_color=[0, 3], color_continuous_scale=px.colors.sequential.Blues,
+                        animation_frame='Year', range_color=[0, 3], color_continuous_scale=px.colors.sequential.Agsunset,
                         projection='natural earth')
     fig.update_layout(title=f'Global GDP Percentage of Countries Throughout Years (2016-2020)')
+    fig.show()
+
+
+def choropleth_percent_change_wholegdp(start: str, end: str):
+    """ Displays percentage national GDP of a country to global total GDP
+
+    Sample Usage:
+    >>> choropleth_percent_change_wholegdp('2016', '2020')
+    """
+    root = 'gdp_'
+    countries = clean_data.populate_dictionary()[0]
+    codes = clean_data.populate_dictionary()[1]
+    yearstart = root + str(start)
+    yearend = root + str(end)
+    datastart = computations.get_percent_of_whole_all_countries(yearstart)
+    dataend = computations.get_percent_of_whole_all_countries(yearend)
+
+    data_so_far = []
+
+    for country in countries:
+        key = country
+        if key in datastart and key in dataend:
+            data = computations.get_percent_change('gdp_', start, end, key)
+            list.append(data_so_far, (codes[country], data, countries[country].name))
+
+    yaxis_title = [word.capitalize() for word in (root.split('_'))]
+    yaxis_title = ' '.join(yaxis_title)
+
+    df = pd.DataFrame(data_so_far, columns=['Country Code', 'Change', 'Country Name'])
+    fig = go.Figure()
+
+    fig.update_layout(title=f'{yaxis_title} Global GDP Percentage Change of Countries Between {start} and {end}')
+
+    fig.add_trace(go.Choropleth(
+        locations=df['Country Code'],
+        z=df['Change'],
+        text=df['Country Name'],
+        colorscale='RdBu',
+        autocolorscale=False,
+        reversescale=True,
+        colorbar={"title": 'Percentage Change %'})
+    )
+
+    fig.update_layout(
+        geo=dict(
+            showframe=False,
+            showcoastlines=False,
+            projection_type='equirectangular'
+        )
+    )
+
     fig.show()
 
 
@@ -416,8 +467,8 @@ def plot_percentage_change_cluster_slider(root: str, start: int, end: int) -> No
                 min_y = min(min_y, country_data[i][1])
                 max_y = max(max_y, country_data[i][1])
 
-    attribute = ' '.join([word.capitalize() for word in root.split('_')]) + ' % Change'
-    gapminder = pd.DataFrame(data, columns=['Year', attribute, 'Country', 'Quartile', 'GDP', 'Text'])
+    attribute = ' '.join([word.capitalize() for word in root.split('_')]) + '% Change'
+    gapminder = pd.DataFrame(data, columns=['Year', attribute, 'Country', 'Quartile', 'GDP'])
     fig = px.scatter(gapminder, color='Quartile', hover_name='Country', animation_frame='Year',
                      x='GDP', y=attribute, color_discrete_sequence=px.colors.qualitative.G10)
     fig.layout.updatemenus[0].buttons[0].args[1]["frame"]["duration"] = 1500
@@ -428,6 +479,41 @@ def plot_percentage_change_cluster_slider(root: str, start: int, end: int) -> No
     fig.update_yaxes(range=[min_y - y_delta, max_y + y_delta])
     fig.show()
 
+
+def plot_attribute_cluster_slider(root: str, start: int, end: int) -> None:
+    """ Plots percentage of the desired attribute from years 2016 to 2020 (inclusive).
+    """
+    country_dict = clean_data.clean_data()
+    # country_dict.pop('Myanmar')
+    # country_dict.pop('Qatar')
+    data = []
+    min_x = min_y = float('inf')
+    max_x = max_y = float('-inf')
+    quartile_to_str = {1: 'Low GDP', 2: 'Lower Middle GDP', 3: 'Higher Middle GDP', 4: 'High GDP'}
+    for country in country_dict:
+        for year in range(start, end + 1):
+            quartile = getattr(country_dict[country], f'gdp_quartile_{year}')
+            gdp = getattr(country_dict[country], f'gdp_{year}')
+            attribute = getattr(country_dict[country], root + str(year))
+            if quartile in {1, 2, 3, 4} and type(attribute) == float:
+                quartile = quartile_to_str[quartile]
+                data.append((year, attribute, country, quartile, gdp))
+                min_x = min(min_x, gdp)
+                max_x = max(max_x, gdp)
+                min_y = min(min_y, attribute)
+                max_y = max(max_y, attribute)
+
+    attribute = ' '.join([word.capitalize() for word in root.split('_')])
+    gapminder = pd.DataFrame(data, columns=['Year', attribute, 'Country', 'Quartile', 'GDP'])
+    fig = px.scatter(gapminder, color='Quartile', hover_name='Country', animation_frame='Year',
+                     x='GDP', y=attribute, color_discrete_sequence=px.colors.qualitative.G10)
+    fig.layout.updatemenus[0].buttons[0].args[1]["frame"]["duration"] = 1500
+    fig.update_layout(title=f'{attribute} from {start} to {end}')
+    x_delta = (max_x - min_x) * 0.1
+    y_delta = (max_y - min_y) * 0.1
+    fig.update_xaxes(range=[min_x - x_delta, max_x + x_delta])
+    fig.update_yaxes(range=[min_y - y_delta, max_y + y_delta])
+    fig.show()
 
 def visualize_aggregates(year: int) -> None:
     """Visualize aggregates.
