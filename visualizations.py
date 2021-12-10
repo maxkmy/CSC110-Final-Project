@@ -416,8 +416,8 @@ def plot_percentage_change_cluster_slider(root: str, start: int, end: int) -> No
                 min_y = min(min_y, country_data[i][1])
                 max_y = max(max_y, country_data[i][1])
 
-    attribute = ' '.join([word.capitalize() for word in root.split('_')]) + ' % Change'
-    gapminder = pd.DataFrame(data, columns=['Year', attribute, 'Country', 'Quartile', 'GDP', 'Text'])
+    attribute = ' '.join([word.capitalize() for word in root.split('_')]) + '% Change'
+    gapminder = pd.DataFrame(data, columns=['Year', attribute, 'Country', 'Quartile', 'GDP'])
     fig = px.scatter(gapminder, color='Quartile', hover_name='Country', animation_frame='Year',
                      x='GDP', y=attribute, color_discrete_sequence=px.colors.qualitative.G10)
     fig.layout.updatemenus[0].buttons[0].args[1]["frame"]["duration"] = 1500
@@ -428,6 +428,41 @@ def plot_percentage_change_cluster_slider(root: str, start: int, end: int) -> No
     fig.update_yaxes(range=[min_y - y_delta, max_y + y_delta])
     fig.show()
 
+
+def plot_attribute_cluster_slider(root: str, start: int, end: int) -> None:
+    """ Plots percentage of the desired attribute from years 2016 to 2020 (inclusive).
+    """
+    country_dict = clean_data.clean_data()
+    # country_dict.pop('Myanmar')
+    # country_dict.pop('Qatar')
+    data = []
+    min_x = min_y = float('inf')
+    max_x = max_y = float('-inf')
+    quartile_to_str = {1: 'Low GDP', 2: 'Lower Middle GDP', 3: 'Higher Middle GDP', 4: 'High GDP'}
+    for country in country_dict:
+        for year in range(start, end + 1):
+            quartile = getattr(country_dict[country], f'gdp_quartile_{year}')
+            gdp = getattr(country_dict[country], f'gdp_{year}')
+            attribute = getattr(country_dict[country], root + str(year))
+            if quartile in {1, 2, 3, 4} and type(attribute) == float:
+                quartile = quartile_to_str[quartile]
+                data.append((year, attribute, country, quartile, gdp))
+                min_x = min(min_x, gdp)
+                max_x = max(max_x, gdp)
+                min_y = min(min_y, attribute)
+                max_y = max(max_y, attribute)
+
+    attribute = ' '.join([word.capitalize() for word in root.split('_')])
+    gapminder = pd.DataFrame(data, columns=['Year', attribute, 'Country', 'Quartile', 'GDP'])
+    fig = px.scatter(gapminder, color='Quartile', hover_name='Country', animation_frame='Year',
+                     x='GDP', y=attribute, color_discrete_sequence=px.colors.qualitative.G10)
+    fig.layout.updatemenus[0].buttons[0].args[1]["frame"]["duration"] = 1500
+    fig.update_layout(title=f'{attribute} from {start} to {end}')
+    x_delta = (max_x - min_x) * 0.1
+    y_delta = (max_y - min_y) * 0.1
+    fig.update_xaxes(range=[min_x - x_delta, max_x + x_delta])
+    fig.update_yaxes(range=[min_y - y_delta, max_y + y_delta])
+    fig.show()
 
 def visualize_aggregates(year: int) -> None:
     """Visualize aggregates.
