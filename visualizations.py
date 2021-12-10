@@ -376,6 +376,9 @@ def plot_percentage_change_cluster_overtime(root: str, start: int, end: int) -> 
                 'y': [percentage_change],
                 'mode': 'markers',
                 'text': country,
+                'marker': {
+                    'color': num_to_colour[quartile]
+                }
             }
             frame['data'].append(data_dict)
         fig_dict['frames'].append(frame)
