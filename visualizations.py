@@ -67,12 +67,12 @@ def plot_percentage_change(root: str, start: int, end: int) -> None:
     fig.show()
 
 
-def chloroplot(root: str):
+def choropleth_percentage_change(root: str):
     """Displays global chloropleth map representing percentage change of 'Root' over the years (2017-2020)
 
     Sample Usage:
-    >>> chloroplot('gdp_')
-    >>> chloroplot('unemployment_')
+    >>> choropleth_percentage_change('gdp_')
+    >>> choropleth_percentage_change('unemployment_')
     """
     countries = clean_data.populate_dictionary()[0]
     codes = clean_data.populate_dictionary()[1]
@@ -91,7 +91,7 @@ def chloroplot(root: str):
     df = pd.DataFrame(data_so_far, columns=['Country Code', '2017', '2018', '2019', '2020', 'Country Name'])
     fig = go.Figure()
 
-    fig.update_layout(title=f'{yaxis_title} Percent Change of Countries in  {2017}')
+    fig.update_layout(title=f'{yaxis_title} Percent Change of Countries (Please select a specific year)')
 
     buttons = []
 
@@ -103,7 +103,8 @@ def chloroplot(root: str):
             text=df['Country Name'],
             colorscale='Blues',
             autocolorscale=False,
-            reversescale=True, )
+            reversescale=True,
+            colorbar={"title": 'Percentage Change'})
         )
 
         buttons.append(dict(
