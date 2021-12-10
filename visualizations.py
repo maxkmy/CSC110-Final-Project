@@ -324,7 +324,7 @@ def plot_percentage_change_cluster(root: str, year: int) -> None:
         - root != ''
 
     Sample Usage:
-    >>> plot_percentage_change_cluster('gdp_', 2016)
+    >>> plot_percentage_change_cluster('gdp_', 2017)
     >>> plot_percentage_change_cluster('unemployment_', 2020)
     """
     country_dict = clean_data.clean_data()
