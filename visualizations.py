@@ -190,61 +190,66 @@ def plot_attribute_cluster_slider(root: str, start: int, end: int) -> None:
     fig.show()
 
 
-def visualize_aggregates(year: int) -> None:
+def visualize_aggregates(start: int, end: int) -> None:
     """Visualize aggregates.
 
-    >>> visualize_aggregates(2016)
+    >>> visualize_aggregates(2016, 2020)
     """
     sectors = ['Manufacturing', 'Service', 'Industry', 'Agriculture']
+    aq_m, aq_s, aq_i, aq_a = {}, {}, {}, {}
+
+    # Execute computations
+    for year in range(start, end + 1):
+        for quartile in range(1, 5):
+            aq_m[(year, quartile)] = computations.get_aggregate_quartile('gdp_manufacturing_',
+                                                                         quartile, year)
+            aq_s[(year, quartile)] = computations.get_aggregate_quartile('gdp_service_',
+                                                                         quartile, year)
+            aq_i[(year, quartile)] = computations.get_aggregate_quartile('gdp_industry_',
+                                                                         quartile, year)
+            aq_a[(year, quartile)] = \
+                computations.get_aggregate_quartile('gdp_agriculture_forestry_fishing_',
+                                                    quartile, year)
 
     fig = go.Figure()
-    # Execute computations
-    aq_m = {quartile: computations.get_aggregate_quartile('gdp_manufacturing_', quartile, year)
-            for quartile in range(1, 5)}
-    aq_s = {quartile: computations.get_aggregate_quartile('gdp_service_', quartile, year)
-            for quartile in range(1, 5)}
-    aq_i = {quartile: computations.get_aggregate_quartile('gdp_industry_', quartile, year)
-            for quartile in range(1, 5)}
-    aq_a = {quartile: computations.get_aggregate_quartile('gdp_agriculture_forestry_fishing_',
-                                                          quartile, year)
-            for quartile in range(1, 5)}
+    # Add traces(bars) to the figure
+    for year in range(start, end + 1):
+        for quartile in range(1, 5):
+            gdp = sum([aq_m[(year, quartile)], aq_s[(year, quartile)], aq_i[(year, quartile)],
+                       aq_a[(year, quartile)]])
+            aq_percentages = [aq_m[(year, quartile)] / gdp,
+                              aq_s[(year, quartile)] / gdp,
+                              aq_i[(year, quartile)] / gdp,
+                              aq_a[(year, quartile)] / gdp]
+            fig.add_trace(go.Bar(x=sectors, y=aq_percentages,
+                                 name=str(year) + ' Quartile ' + str(quartile),
+                                 visible=(year == start)))
 
-    # Create Visualizations
-    for quartile in range(1, 5):
-        aq_percentages = [aq_m[quartile] / sum([aq_m[quartile], aq_s[quartile],
-                                                aq_i[quartile], aq_a[quartile]]),
-                          aq_s[quartile] / sum([aq_m[quartile], aq_s[quartile],
-                                                aq_i[quartile], aq_a[quartile]]),
-                          aq_i[quartile] / sum([aq_m[quartile], aq_s[quartile],
-                                                aq_i[quartile], aq_a[quartile]]),
-                          aq_a[quartile] / sum([aq_m[quartile], aq_s[quartile],
-                                                aq_i[quartile], aq_a[quartile]])]
-        fig.add_trace(go.Bar(x=sectors, y=aq_percentages, name=quartile))
-
-    # Add dropdown buttons
-    buttons = [dict(
-        label='All',
-        method='update',
-        args=[{'visible': [True for _ in range(1, 5)]},
-              {'title': f'Aggregate Sector GDP as a % of Aggregate GDP for {year} by Quartile',
-               'showlegend': True}])]
-
-    for i in range(1, 5):
-        buttons.append(dict(
-            label='Quartile' + str(i),
+    # Slider for changing the year
+    steps = []
+    for i in range(end - start + 1):
+        steps.append(dict(
+            label=str(start + i),
             method='update',
-            args=[{'visible': [x == i for x in range(1, 5)]},
-                  {'title': f'Aggregate Sector GDP as a % of Aggregate GDP for {year} by Quartile',
+            args=[{'visible': [i * 4 <= x < i * 4 + 4
+                               for x in range(len(fig.data))]},
+                  {'title': f'Aggregate Sector GDP as a % of Aggregate GDP for {start}-{end} '
+                            f'by Quartile',
                    'showlegend': True}]))
 
+    sliders = [dict(
+        active=0,
+        currentvalue={"prefix": "Year: "},
+        pad={"t": 50},
+        steps=steps
+    )]
+
     fig.update_layout(
-        updatemenus=[go.layout.Updatemenu(
-            active=0,
-            buttons=buttons
-        )],
+        sliders=sliders,
         xaxis_title='Sector',
         yaxis_title='% of Aggregate GDP',
-        title=f'Aggregate Sector GDP as a % of Aggregate GDP for {year} by Quartile'
+        title=f'Aggregate Sector GDP as a % of Aggregate GDP for {start}-{end} '
+              f'by GDP Quartile'
     )
 
     fig.show()
