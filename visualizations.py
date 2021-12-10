@@ -2,6 +2,7 @@
 """
 
 import plotly.graph_objects as go
+import plotly.express as px
 import pandas as pd
 import clean_data
 import computations
@@ -129,6 +130,36 @@ def choropleth_percentage_change(root: str):
     fig.show()
 
 
+def choropleth_percentage_change_slide(root: str):
+    """Displays global chloropleth map representing percentage change of 'Root' over the years (2017-2020) with built-in time slider
+
+    Sample Usage:
+    >>> choropleth_percentage_change_slide('gdp_')
+    >>> choropleth_percentage_change_slide('unemployment_')
+
+    """
+    countries = clean_data.populate_dictionary()[0]
+    codes = clean_data.populate_dictionary()[1]
+    countries.pop('Qatar')
+
+    yaxis_title = [word.capitalize() for word in (root.split('_'))]
+    yaxis_title = ' '.join(yaxis_title)
+
+    data_so_far = []
+    for country in countries:
+        ordered_data = computations.get_percent_change_over_time(root, 2016, 2020, countries[country].name)
+        for i in range(4):
+            list.append(data_so_far, (codes[country], 2016 + i + 1, ordered_data[i][1], countries[country].name))
+
+    gapminder = pd.DataFrame(data_so_far, columns=['Country Code', 'Year', 'Data', 'Country Name'])
+
+    fig = px.choropleth(gapminder, locations='Country Code', color='Data', hover_name='Country Name',
+                        animation_frame='Year', color_continuous_scale=px.colors.sequential.Blues,
+                        projection='natural earth')
+    fig.update_layout(title=f'{yaxis_title} Percent Change of Countries Through Years (2017-2020)')
+    fig.show()
+
+
 def choropleth_percent_wholegdp():
     """ Displays percentage national GDP of a country to global total GDP
 
@@ -198,6 +229,41 @@ def choropleth_percent_wholegdp():
         )
     )
 
+    fig.show()
+
+
+def choropleth_percent_wholegdp_slide():
+    """ Displays percentage national GDP of a country to global total GDP with built-in time slider
+
+    Sample Usage:
+    >>> choropleth_percent_wholegdp_slide()
+    """
+
+    countries = clean_data.populate_dictionary()[0]
+    codes = clean_data.populate_dictionary()[1]
+
+    data2016 = computations.get_percent_of_whole_all_countries('gdp_2016')
+    data2017 = computations.get_percent_of_whole_all_countries('gdp_2017')
+    data2018 = computations.get_percent_of_whole_all_countries('gdp_2018')
+    data2019 = computations.get_percent_of_whole_all_countries('gdp_2019')
+    data2020 = computations.get_percent_of_whole_all_countries('gdp_2020')
+
+    data_so_far = []
+    for country in countries:
+        key = country
+        if key in data2016 and key in data2017 and key in data2018 and key in data2019 and key in data2020:
+            list.append(data_so_far, (codes[country], 2016, data2016[key], countries[country].name))
+            list.append(data_so_far, (codes[country], 2017, data2017[key], countries[country].name))
+            list.append(data_so_far, (codes[country], 2018, data2018[key], countries[country].name))
+            list.append(data_so_far, (codes[country], 2019, data2019[key], countries[country].name))
+            list.append(data_so_far, (codes[country], 2020, data2020[key], countries[country].name))
+
+    gapminder = pd.DataFrame(data_so_far, columns=['Country Code', 'Year', 'Data', 'Country Name'])
+
+    fig = px.choropleth(gapminder, locations='Country Code', color='Data', hover_name='Country Name',
+                        animation_frame='Year', range_color=[0, 3], color_continuous_scale=px.colors.sequential.Blues,
+                        projection='natural earth')
+    fig.update_layout(title=f'Global GDP Percentage of Countries Throughout Years (2016-2020)')
     fig.show()
 
 
@@ -352,7 +418,7 @@ def plot_percentage_change_cluster_overtime(root: str, start: int, end: int) -> 
                 {
                     'args': [None, {'frame': {'duration': 500, 'redraw': False},
                                     'fromcurrent': True, 'transition': {'duration': 300,
-                                                                    'easing': 'quadratic-in-out'}}],
+                                                                        'easing': 'quadratic-in-out'}}],
                     'label': 'Play',
                     'method': 'animate'
                 },
@@ -460,8 +526,8 @@ def plot_percentage_change_cluster_overtime(root: str, start: int, end: int) -> 
              'mode': 'immediate',
              'transition': {'duration': 300}}
         ],
-        'label': year,
-        'method': 'animate'}
+            'label': year,
+            'method': 'animate'}
         sliders_dict['steps'].append(slider_step)
 
     fig_dict['layout']['sliders'] = [sliders_dict]
