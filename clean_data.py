@@ -9,9 +9,6 @@ in this file are meant to:
 import csv
 
 
-###############################################################################
-# Country Class
-###############################################################################
 class Country:
     """ A class representing each country with their associated statistics
 
