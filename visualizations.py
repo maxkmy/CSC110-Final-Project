@@ -201,7 +201,7 @@ def choropleth_percent_wholegdp() -> None:
             locations=df['Country Code'],
             z=df[year],
             text=df['Country Name'],
-            colorscale='RdBu',
+            colorscale='Agsunset',
             autocolorscale=False,
             reversescale=True,
             zmin=0,
@@ -258,7 +258,7 @@ def choropleth_percent_wholegdp_slide() -> None:
     gapminder = pd.DataFrame(data_so_far, columns=['Country Code', 'Year', 'Data', 'Country Name'])
 
     fig = px.choropleth(gapminder, locations='Country Code', color='Data', hover_name='Country Name',
-                        animation_frame='Year', range_color=[0, 3], color_continuous_scale=px.colors.sequential.RdBu,
+                        animation_frame='Year', range_color=[0, 3], color_continuous_scale=px.colors.sequential.Agsunset,
                         projection='natural earth')
     fig.update_layout(title=f'Global GDP Percentage of Countries Throughout Years (2016-2020)')
     fig.show()
