@@ -71,6 +71,7 @@ def chloropleth_percentage_change(root: str):
     """Displays global chloropleth map representing percentage change of 'Root' over the years (2017-2020)
 
     Sample Usage:
+
     >>> chloropleth_percentage_change('gdp_')
     >>> chloropleth_percentage_change('unemployment_')
     """
