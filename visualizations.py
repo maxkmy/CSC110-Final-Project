@@ -8,13 +8,13 @@ import clean_data
 import computations
 
 
-def choropleth_percentage_change_slide(root: str):
+def choropleth_percentage_change_slide(root: str, start: int, end: int):
     """Displays global chloropleth map representing percentage change of 'Root' over the years
     (2017-2020) with built-in time slider.
 
     Sample Usage:
-    >>> choropleth_percentage_change_slide('gdp_')
-    >>> choropleth_percentage_change_slide('unemployment_')
+    >>> choropleth_percentage_change_slide('gdp_', 2016, 2020)
+    >>> choropleth_percentage_change_slide('unemployment_', 2016, 2020)
 
     """
     countries, codes = clean_data.populate_dictionary()
@@ -25,8 +25,8 @@ def choropleth_percentage_change_slide(root: str):
 
     data_so_far = []
     for country in countries:
-        ordered_data = computations.get_percent_change_over_time(root, 2016, 2020, countries[country].name)
-        for i in range(4):
+        ordered_data = computations.get_percent_change_over_time(root, start, end, countries[country].name)
+        for i in range(end - start):
             list.append(data_so_far, (codes[country], 2016 + i + 1, ordered_data[i][1], countries[country].name))
 
     gapminder = pd.DataFrame(data_so_far, columns=['Country Code', 'Year', 'Data', 'Country Name'])
@@ -34,77 +34,8 @@ def choropleth_percentage_change_slide(root: str):
     fig = px.choropleth(gapminder, locations='Country Code', color='Data', hover_name='Country Name',
                         animation_frame='Year', color_continuous_scale=px.colors.sequential.RdBu,
                         projection='natural earth')
-    fig.update_layout(title=f'{yaxis_title} Percent Change of Countries Through Years (2017-2020)')
-    fig.show()
-
-
-def choropleth_percent_wholegdp(start: int, end: int) -> None:
-    """ Displays percentage national GDP of a country to global total GDP
-
-    Sample Usage:
-    >>> choropleth_percent_wholegdp(2016, 2020)
-    """
-    countries = clean_data.populate_dictionary()[0]
-    codes = clean_data.populate_dictionary()[1]
-
-    data = []
-    for year in range(start, end + 1):
-        data.append(computations.get_percent_of_whole_all_countries(f'gdp_{year}'))
-
-    data_so_far = []
-    for country in countries:
-        if all(country in data[i] for i in range(len(data))):
-            cur_list = [codes[country]]
-            for year in range(start, end + 1):
-                cur_list.append(data[year - start][country])
-            cur_list.append(country)
-            data_so_far.append(tuple(cur_list))
-
-    column_name = ['Country Code']
-    for year in range(start, end + 1):
-        column_name.append(str(year))
-    column_name.append('Country Name')
-
-    df = pd.DataFrame(data_so_far, columns=column_name)
-    fig = go.Figure()
-
-    fig.update_layout(title=f'Global GDP Percentage of Countries (Please select a specific year)')
-
-    buttons = []
-
-    for i in range(end - start + 1):
-        year = str(start + i)
-        fig.add_trace(go.Choropleth(
-            locations=df['Country Code'],
-            z=df[year],
-            text=df['Country Name'],
-            colorscale='Agsunset',
-            autocolorscale=False,
-            reversescale=True,
-            zmin=0,
-            zmax=3,
-            colorbar={"title": 'Global GDP Percentage'})
-        )
-
-        buttons.append(dict(
-            label=year,
-            method='update',
-            args=[{'visible': [x == i for x in range(end - start + 1)]},
-                  {'title': f'Global GDP Percentage of Countries in  {year}',
-                   'showlegend': True}]))
-
-    fig.update_layout(
-        updatemenus=[go.layout.Updatemenu(
-            active=0,
-            buttons=buttons
-        )],
-        geo=dict(
-            showframe=False,
-            showcoastlines=False,
-            projection_type='equirectangular'
-        )
-    )
-
+    fig.update_layout(title=f'{yaxis_title} Percent Change of Countries Through Years ({start}-{end})')
+    fig.layout.updatemenus[0].buttons[0].args[1]["frame"]["duration"] = 1500
     fig.show()
 
 
@@ -132,6 +63,7 @@ def choropleth_percent_wholegdp_slider(start: int, end: int) -> None:
                         animation_frame='Year', range_color=[0, 3], color_continuous_scale=px.colors.sequential.Agsunset,
                         projection='natural earth')
     fig.update_layout(title=f'Global GDP Percentage of Countries Throughout Years ({start}-{end})')
+    fig.layout.updatemenus[0].buttons[0].args[1]["frame"]["duration"] = 1500
     fig.show()
 
 
