@@ -129,6 +129,78 @@ def choropleth_percentage_change(root: str):
     fig.show()
 
 
+def choropleth_percent_wholegdp():
+    """ Displays percentage national GDP of a country to global total GDP
+
+    Sample Usage:
+    >>> choropleth_percent_wholegdp()
+    """
+    root = 'gpd_'
+    countries = clean_data.populate_dictionary()[0]
+    codes = clean_data.populate_dictionary()[1]
+
+    data2016 = computations.get_percent_of_whole_all_countries('gdp_2016')
+    data2017 = computations.get_percent_of_whole_all_countries('gdp_2017')
+    data2018 = computations.get_percent_of_whole_all_countries('gdp_2018')
+    data2019 = computations.get_percent_of_whole_all_countries('gdp_2019')
+    data2020 = computations.get_percent_of_whole_all_countries('gdp_2020')
+
+    data_so_far = []
+
+    for country in countries:
+        key = country
+        if key in data2016 and key in data2017 and key in data2018 and key in data2019 and key in data2020:
+            list.append(data_so_far, (codes[country], data2016[key],
+                                      data2017[key], data2018[key],
+                                      data2019[key], data2020[key],
+                                      countries[country].name))
+
+    yaxis_title = [word.capitalize() for word in (root.split('_'))]
+    yaxis_title = ' '.join(yaxis_title)
+
+    df = pd.DataFrame(data_so_far, columns=['Country Code', '2016', '2017', '2018', '2019', '2020', 'Country Name'])
+    fig = go.Figure()
+
+    fig.update_layout(title=f'Global  {yaxis_title} Percentage of Countries (Please select a specific year)')
+
+    buttons = []
+
+    for i in range(5):
+        year = str(2016 + i)
+        fig.add_trace(go.Choropleth(
+            locations=df['Country Code'],
+            z=df[year],
+            text=df['Country Name'],
+            colorscale='Blues',
+            autocolorscale=False,
+            reversescale=True,
+            zmin=0,
+            zmax=3,
+            colorbar={"title": 'Global GDP Percentage'})
+        )
+
+        buttons.append(dict(
+            label=(year),
+            method='update',
+            args=[{'visible': [x == i for x in range(5)]},
+                  {'title': f'Global {yaxis_title} Percentage of Countries in  {year}',
+                   'showlegend': True}]))
+
+    fig.update_layout(
+        updatemenus=[go.layout.Updatemenu(
+            active=0,
+            buttons=buttons
+        )],
+        geo=dict(
+            showframe=False,
+            showcoastlines=False,
+            projection_type='equirectangular'
+        )
+    )
+
+    fig.show()
+
+
 def plot_percentage_change_cluster(root: str, year: int) -> None:
     """ Plot the percentage change of the desired attribute (root) from year - 1 to year on the
     xy-plane as (gdp, desired attribute). Cluster the points based on GDP quartile.
