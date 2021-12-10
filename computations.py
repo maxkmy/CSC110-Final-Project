@@ -1,4 +1,8 @@
-""" Contains functions to perform various computations
+""" CSC110 Fall 2021 Final Project: clean_data
+
+This Python module contains several function headers and descriptions. Functions located
+in this file are meant to:
+    1. Compute certain metrics of interest for visualization
 """
 
 from clean_data import clean_data
@@ -6,8 +10,8 @@ import math
 
 
 def get_percent_change(root: str, new_attr_suffix: str, old_attr_suffix, country: str) -> float:
-    """ Calculates the percent change between the attributes root + new_attr_suffix and
-    root + old_attr_suffix
+    """ Calculates the percent change between the attributes (root + new_attr_suffix) and
+    (root + old_attr_suffix).
     """
     # retrieve the country instance
     country_dict = clean_data()
@@ -27,7 +31,7 @@ def get_percent_change(root: str, new_attr_suffix: str, old_attr_suffix, country
 def get_percent_change_over_time(root: str, start: int, end: int, country: str) -> \
         list[tuple[int, float]]:
     """ Calculates the percentage change of the desired attribute (root) between consecutive years
-    ranging from start to end inclusive
+    ranging from start to end inclusive.
     """
     # initialize accumulator
     percentage_changes = []
@@ -43,8 +47,8 @@ def get_percent_change_over_time(root: str, start: int, end: int, country: str) 
 
 
 def get_aggregate(attribute: str) -> float:
-    """ Calculates the sum of the attribute in country_dict where the attribute is available
-    (i.e. the attribute is not an empty string)
+    """ Calculates the aggregate of the attribute in country_dict where the attribute is available
+    (i.e. the attribute is not an empty string).
     """
     country_dict = clean_data()
     # initialize accumulator
@@ -62,7 +66,7 @@ def get_aggregate(attribute: str) -> float:
 
 def get_percent_of_aggregate(aggregate: float, attr: str, country: str) -> float:
     """ Returns the percentage the attribute takes up of the aggregate for a given country.
-    If the country does not have the attribute, return float('nan') (Not a number)
+    If the country does not have the attribute, return float('nan') (Not a number).
     """
     country_dict = clean_data()
     # get the attribute from country's Country instance
@@ -77,7 +81,7 @@ def get_percent_of_aggregate(aggregate: float, attr: str, country: str) -> float
 def get_percent_of_whole_all_countries(attr: str) -> dict[str, float]:
     """ Returns a mapping of the percentage the attribute takes up of the aggregate for all
     countries. If the country does not have the attribute, return float('nan') (Not a number).
-    The return type is a dict where a country's name maps to its percentage of whole
+    The return type is a dict where a country's name maps to its percentage of whole.
     """
     country_dict = clean_data()
     # initialize the accumulator
@@ -123,7 +127,7 @@ def get_attribute_by_gdp_quartile(root: str, year: int) -> list[list[tuple[int, 
 
 def get_aggregate_quartile(root: str, desired_quartile: int, year: int) -> float:
     """ Calculates the sum of the attribute in country_dict where the country is in the desired
-    quartile and the attribute is available(i.e. the attribute is not an empty string)
+    quartile and the attribute is available (i.e. the attribute is not an empty string).
     """
     country_dict = clean_data()
     # initialize accumulator
@@ -139,21 +143,17 @@ def get_aggregate_quartile(root: str, desired_quartile: int, year: int) -> float
     return accum
 
 
-def get_xy_data(ordered_data: list[tuple[float, float]]) -> tuple[list[int], list[float]]:
+def get_xy_data(ordered_data: list[tuple[int, float]]) -> tuple[list[int], list[float]]:
     """Return a tuple of two parallel lists. The first list contains the first element of each
     element in ordered_data and the second list contains the second elemeent of each element
-    in ordered_data
+    in ordered_data.
 
     >>> data = [(2016, 4.5), (2017, 8.8) ,(2018, 12.4) ,(2019, 17.8) ,(2020, 40.2)]
     >>> get_xy_data(data)
     ([2016, 2017, 2018, 2019, 2020], [4.5, 8.8, 12.4, 17.8, 40.2])
-
     """
-    # ACCUMULATOR year_so_far: strings from outputs
-    year_so_far = []
-    # ACCUMULATOR outputs_so_far: floats from outputs
-    data_so_far = []
-    for put in ordered_data:
-        list.append(year_so_far, put[0])
-        list.append(data_so_far, put[1])
-    return year_so_far, data_so_far
+    x_data, y_data = [], []
+    for x, y in ordered_data:
+        x_data.append(x)
+        y_data.append(y)
+    return x_data, y_data
