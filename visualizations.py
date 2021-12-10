@@ -67,32 +67,31 @@ def plot_percentage_change(root: str, start: int, end: int) -> None:
     fig.show()
 
 
-def chloropleth_percent_change(root: str):
+def chloropleth_percentage_change(root: str):
     """Displays global chloropleth map representing percentage change of 'Root' over the years (2017-2020)
 
     Sample Usage:
-    >>> chloropleth_percent_change('gdp_')
-    >>> chloropleth_percent_change('unemployment_')
+    >>> chloropleth_percentage_change('gdp_')
+    >>> chloropleth_percentage_change('unemployment_')
     """
     countries = clean_data.populate_dictionary()[0]
     codes = clean_data.populate_dictionary()[1]
 
-    yaxis_title = [word.capitalize() for word in (root.split('_'))]
-    yaxis_title = ' '.join(yaxis_title)
-
     data_so_far = []
     for country in countries:
 
-        if countries[country].name != 'Qatar' and yaxis_title == 'Unemployment':
-            # removed Qatar due to significant outlier in unemployment data
+        if countries[country].name != 'Qatar':  # Qatar due to significant outlier
             ordered_data = computations.get_percent_change_over_time(root, 2016, 2020, countries[country].name)
             list.append(data_so_far, (codes[country], ordered_data[0][1], ordered_data[1][1], ordered_data[2][1],
                                       ordered_data[3][1], countries[country].name))
 
+    yaxis_title = [word.capitalize() for word in (root.split('_'))]
+    yaxis_title = ' '.join(yaxis_title)
+
     df = pd.DataFrame(data_so_far, columns=['Country Code', '2017', '2018', '2019', '2020', 'Country Name'])
     fig = go.Figure()
 
-    fig.update_layout(title=f'{yaxis_title} Percent Change of Countries in  {2017}')
+    fig.update_layout(title=f'{yaxis_title} Percent Change of Countries (Please select a specific year)')
 
     buttons = []
 
@@ -104,7 +103,8 @@ def chloropleth_percent_change(root: str):
             text=df['Country Name'],
             colorscale='Blues',
             autocolorscale=False,
-            reversescale=True, )
+            reversescale=True,
+            colorbar={"title": 'Percentage Change'})
         )
 
         buttons.append(dict(
