@@ -108,7 +108,7 @@ def choropleth_percentage_change(root: str):
         )
 
         buttons.append(dict(
-            label=(year),
+            label=year,
             method='update',
             args=[{'visible': [x == i for x in range(4)]},
                   {'title': f'{yaxis_title} Percent Change of Countries in  {year}',
@@ -210,7 +210,7 @@ def choropleth_percent_wholegdp() -> None:
         )
 
         buttons.append(dict(
-            label=(year),
+            label=year,
             method='update',
             args=[{'visible': [x == i for x in range(5)]},
                   {'title': f'Global {yaxis_title} Percentage of Countries in  {year}',
@@ -231,7 +231,7 @@ def choropleth_percent_wholegdp() -> None:
     fig.show()
 
 
-def choropleth_percent_wholegdp_slide():
+def choropleth_percent_wholegdp_slide() -> None:
     """ Displays percentage national GDP of a country to global total GDP with built-in time slider
 
     Sample Usage:
