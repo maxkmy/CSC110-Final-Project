@@ -61,13 +61,6 @@
 "ESP","Europe & Central Asia","High income","A simple multiplier is used to convert the national currencies of EMU members to euros. The following irrevocable euro conversion rate was adopted by the EU Council on January 1, 1999: 1 euro = 166.386 Spanish peseta. Please note that historical data before 1999 are not actual euros and are not comparable or suitable for aggregation across countries.","Spain",
 "EST","Europe & Central Asia","High income","The following irrevocable euro conversion rate entered into force on January 1, 2011: 1 euro = 15.6466 Estonian kroon. Please note that historical data are not actual euros and are not comparable or suitable for aggregation across countries.","Estonia",
 "ETH","Sub-Saharan Africa","Low income","Fiscal year end: July 7; reporting period for national accounts data: FY.","Ethiopia",
-
-Countries are distinguished based on the nature and severity of issues they face. The classification uses the following categories:
-
-- Countries with high levels of institutional and social fragility, identified based on publicly available indicators that measure the quality of policy and institutions and manifestations of fragility.
-- Countries affected by violent conflict, identified based on a threshold number of conflict-related deaths relative to the population. This category includes two sub-categories based on the intensity of violence: countries in high-intensity conflict and countries in medium-intensity conflict.
-
-For more information, please visit https://www.worldbank.org/en/topic/fragilityconflictviolence/brief/harmonized-list-of-fragile-situations.","Fragile and conflict affected situations",
 "FIN","Europe & Central Asia","High income","A simple multiplier is used to convert the national currencies of EMU members to euros. The following irrevocable euro conversion rate was adopted by the EU Council on January 1, 1999: 1 euro = 5.94573 Finnish markka. Please note that historical data before 1999 are not actual euros and are not comparable or suitable for aggregation across countries.","Finland",
 "FJI","East Asia & Pacific","Upper middle income","","Fiji",
 "FRA","Europe & Central Asia","High income","The following irrevocable euro conversion rate was adopted by the EU Council on January 1, 1999: 1 euro = 6.55957 French franc. Please note that historical data before 1999 are not actual euros and are not comparable or suitable for aggregation across countries.","France",
