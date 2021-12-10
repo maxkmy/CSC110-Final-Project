@@ -259,6 +259,9 @@ def plot_percentage_change_cluster_overtime(root: str, start: int, end: int) -> 
     """ Plots percentage of the desired attribute from years start to end (inclusive).
     """
     country_dict = clean_data.clean_data()
+    # Qatar and Myanmar are outliers
+    country_dict.pop('Qatar')
+    country_dict.pop('Myanmar')
     years = list(range(start, end + 1))
 
     fig_dict = {
@@ -351,6 +354,9 @@ def plot_percentage_change_cluster_overtime(root: str, start: int, end: int) -> 
 
         fig_dict['data'].append(data_dict)
 
+    min_x = min_y = float('inf')
+    max_x = max_y = float('-inf')
+
     for year in years:
         frame = {'data': [], 'name': str(year)}
         for country in country_dict:
@@ -359,6 +365,11 @@ def plot_percentage_change_cluster_overtime(root: str, start: int, end: int) -> 
             percentage_change = computations.get_percent_change(root, str(year), str(year - 1), country)
             if type(gdp) != float or type(percentage_change) != float:
                 continue
+
+            min_x = min(min_x, gdp)
+            min_y = min(min_y, percentage_change)
+            max_x = max(max_x, gdp)
+            max_y = max(max_y, percentage_change)
 
             data_dict = {
                 'x': [gdp],
@@ -382,6 +393,11 @@ def plot_percentage_change_cluster_overtime(root: str, start: int, end: int) -> 
 
     fig = go.Figure(fig_dict)
     fig.update_layout(showlegend=False)
+
+    x_delta = (max_x - min_x) * 0.1
+    y_delta = (max_y - min_y) * 0.1
+    fig.update_xaxes(range=[min_x - x_delta, max_x + x_delta])
+    fig.update_yaxes(range=[min_y - y_delta, max_y + y_delta])
     fig.show()
 
 
