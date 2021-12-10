@@ -62,9 +62,13 @@ class Country:
         (self.gdp_2018 == '' or self.gdp_2018 >= 0) and \
         (self.gdp_2019 == '' or self.gdp_2019 >= 0) and \
         (self.gdp_2020 == '' or self.gdp_2020 >= 0)
-        - self.gdp_2016 in {1, 2, 3, 4, ''} and self.gdp_2017 in {1, 2, 3, 4, ''} and \
-        self.gdp_2018 in {1, 2, 3, 4, ''} and self.gdp_2019 in {1, 2, 3, 4, ''} and \
-        self.gdp_2020 in {1, 2, 3, 4, ''}
+        - self.gdp_2016 in {1, 2, 3, 4, None} and self.gdp_2017 in {1, 2, 3, 4, None} and \
+        self.gdp_2018 in {1, 2, 3, 4, None} and self.gdp_2019 in {1, 2, 3, 4, None} and \
+        self.gdp_2020 in {1, 2, 3, 4, None}
+
+    Sample Usage
+    >>> Country('Canada')
+    Country(name='Canada')
     """
     def __init__(self, name: str) -> None:
         self.name = name
@@ -209,12 +213,20 @@ def get_unemployment(country_dict: dict) -> None:
 
 
 def get_median(data: list[float], start: int, end: int) -> float:
-    """ Return the median of the subarray data[start:end]
+    """ Return the median of the subarray data[start:end] where data is an increasing list
+
+    Preconditions:
+        - all(data[i] <= data[i + 1] for i in range(len(data) - 1))
+
+    >>> get_median([1.0, 2.0, 3.0], 0, 3)
+    2.0
+    >>> get_median([1.0, 2.0, 3.0, 4.0], 0, 4)
+    2.5
     """
     length = end - start
     if length % 2 == 0:
-        mid1 = start + length // 2
-        mid2 = start + length // 2 + 1
+        mid1 = start + length // 2 - 1
+        mid2 = start + length // 2
         median = (data[mid1] + data[mid2]) / 2
     else:
         mid = start + length // 2
@@ -223,8 +235,8 @@ def get_median(data: list[float], start: int, end: int) -> float:
 
 
 def get_quartile_split(country_dict: [str, Country], root: str, year: int) -> None:
-    """ Returns a list of 4 sets where each set contains name of countries in each quartile
-    for the given attribute (root + year)
+    """ Sets the attribute gdp_quartile_xxxx where xxxx is year. The attribute can be assigned to
+    1, 2, 3 or 4 (or remain unassigned if the country's GDP that year isn't available).
     """
     attr = root + str(year)
     data = []
@@ -235,7 +247,10 @@ def get_quartile_split(country_dict: [str, Country], root: str, year: int) -> No
     data.sort()
     median = get_median(data, 0, len(data))
     mid = len(data) // 2
+    # get the median from lower half. 'mid' is never included
     lower_half_median = get_median(data, 0, mid)
+    # get the median from upper half. 'mid' is included if len(data) is even and excluded if
+    # len(data) is odd
     upper_half_median = get_median(data, mid + len(data) % 2, len(data))
 
     for country in country_dict:
@@ -252,10 +267,12 @@ def get_quartile_split(country_dict: [str, Country], root: str, year: int) -> No
             setattr(country_dict[country], f'gdp_quartile_{year}', 4)
 
 
-def get_gdp_quartile(country_dict: dict[str, Country]) -> None:
-    """ Assign each country to a gdp_quartile for years 2016 to 2020
+def get_gdp_quartile(country_dict: dict[str, Country], start: int, end: int) -> None:
+    """ Sets the attribute gdp_quartile_xxxx where xxxx is in range [start, end + 1].
+    The attribute can be assigned to 1, 2, 3 or 4 (or remain unassigned if the country's GDP
+    that year isn't available).
     """
-    for year in range(2016, 2021):
+    for year in range(start, end + 1):
         get_quartile_split(country_dict, 'gdp_', year)
 
 
@@ -266,7 +283,7 @@ def clean_data() -> dict[str, Country]:
     country_dict = populate_dictionary()[0]
     # get required attributes from csv files
     get_national_gdp(country_dict)
-    get_gdp_quartile(country_dict)
+    get_gdp_quartile(country_dict, 2016, 2020)
     get_sector_gdp(country_dict)
     get_unemployment(country_dict)
     # return cleaned data
