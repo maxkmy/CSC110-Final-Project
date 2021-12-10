@@ -101,7 +101,7 @@ def choropleth_percentage_change(root: str):
             locations=df['Country Code'],
             z=df[year],
             text=df['Country Name'],
-            colorscale='Blues',
+            colorscale='RdBu',
             autocolorscale=False,
             reversescale=True,
             colorbar={"title": 'Percentage Change'})
@@ -153,7 +153,7 @@ def choropleth_percentage_change_slide(root: str):
     gapminder = pd.DataFrame(data_so_far, columns=['Country Code', 'Year', 'Data', 'Country Name'])
 
     fig = px.choropleth(gapminder, locations='Country Code', color='Data', hover_name='Country Name',
-                        animation_frame='Year', color_continuous_scale=px.colors.sequential.Blues,
+                        animation_frame='Year', color_continuous_scale=px.colors.sequential.RdBu,
                         projection='natural earth')
     fig.update_layout(title=f'{yaxis_title} Percent Change of Countries Through Years (2017-2020)')
     fig.show()
@@ -201,7 +201,7 @@ def choropleth_percent_wholegdp() -> None:
             locations=df['Country Code'],
             z=df[year],
             text=df['Country Name'],
-            colorscale='Blues',
+            colorscale='RdBu',
             autocolorscale=False,
             reversescale=True,
             zmin=0,
@@ -258,9 +258,60 @@ def choropleth_percent_wholegdp_slide() -> None:
     gapminder = pd.DataFrame(data_so_far, columns=['Country Code', 'Year', 'Data', 'Country Name'])
 
     fig = px.choropleth(gapminder, locations='Country Code', color='Data', hover_name='Country Name',
-                        animation_frame='Year', range_color=[0, 3], color_continuous_scale=px.colors.sequential.Blues,
+                        animation_frame='Year', range_color=[0, 3], color_continuous_scale=px.colors.sequential.RdBu,
                         projection='natural earth')
     fig.update_layout(title=f'Global GDP Percentage of Countries Throughout Years (2016-2020)')
+    fig.show()
+
+
+def choropleth_percent_change_wholegdp(start: str, end: str):
+    """ Displays percentage national GDP of a country to global total GDP
+
+    Sample Usage:
+    >>> choropleth_percent_change_wholegdp('2016', '2020')
+    """
+    root = 'gdp_'
+    countries = clean_data.populate_dictionary()[0]
+    codes = clean_data.populate_dictionary()[1]
+    yearstart = root + str(start)
+    yearend = root + str(end)
+    datastart = computations.get_percent_of_whole_all_countries(yearstart)
+    dataend = computations.get_percent_of_whole_all_countries(yearend)
+
+    data_so_far = []
+
+    for country in countries:
+        key = country
+        if key in datastart and key in dataend:
+            data = computations.get_percent_change('gdp_', start, end, key)
+            list.append(data_so_far, (codes[country], data, countries[country].name))
+
+    yaxis_title = [word.capitalize() for word in (root.split('_'))]
+    yaxis_title = ' '.join(yaxis_title)
+
+    df = pd.DataFrame(data_so_far, columns=['Country Code', 'Change', 'Country Name'])
+    fig = go.Figure()
+
+    fig.update_layout(title=f'{yaxis_title} Global GDP Percentage Change of Countries Between {start} and {end}')
+
+    fig.add_trace(go.Choropleth(
+        locations=df['Country Code'],
+        z=df['Change'],
+        text=df['Country Name'],
+        colorscale='RdBu',
+        autocolorscale=False,
+        reversescale=True,
+        colorbar={"title": 'Percentage Change %'})
+    )
+
+    fig.update_layout(
+        geo=dict(
+            showframe=False,
+            showcoastlines=False,
+            projection_type='equirectangular'
+        )
+    )
+
     fig.show()
 
 
