@@ -1,21 +1,37 @@
-"""
-Process data from csv files into a dictionary populate with Country class instance
+""" CSC110 Fall 2021 Final Project: clean_data
+
+This Python module contains several function headers and descriptions. Functions located
+in this file are meant to:
+    1. Extract country metrics from external csv files
+    2. Process country metrics obtained from csv files to set new metrics
 """
 
 import csv
 
 
+###############################################################################
+# Country Class
+###############################################################################
 class Country:
     """ A class representing each country with their associated statistics
 
-
     Instance Attributes:
+        - name: the name of 'self'
         - gdp_2016: national GDP value of 'self' reported in the year 2016
         - gdp_2017: national GDP value of 'self' reported in the year 2017
         - gdp_2018: national GDP value of 'self' reported in the year 2018
         - gdp_2019: national GDP value of 'self' reported in the year 2019
         - gdp_2020: national GDP value of 'self' reported in the year 2020
-        - income_group: income rating of country ('High...', 'Medium...', 'Low..')
+        - gdp_quartile_2016: the quartile of 'self's 2016 GDP where 4 is the top 25% quartile
+        and 1 is the bottom 25% quartile
+        - gdp_quartile_2017: the quartile of 'self's 2017 GDP where 4 is the top 25% quartile
+        and 1 is the bottom 25% quartile
+        - gdp_quartile_2018: the quartile of 'self's 2018 GDP where 4 is the top 25% quartile
+        and 1 is the bottom 25% quartile
+        - gdp_quartile_2019: the quartile of 'self's 2019 GDP where 4 is the top 25% quartile
+        and 1 is the bottom 25% quartile
+        - gdp_quartile_2020: the quartile of 'self's 2020 GDP where 4 is the top 25% quartile
+        and 1 is the bottom 25% quartile
         - gdp_manufacturing_2016: GDP value of self in manufactoring sector in 2016
         - gdp_service_2016: GDP value of self in service sector in 2016
         - gdp_industry_2016: GDP value of self in industry sector in 2016
@@ -36,18 +52,23 @@ class Country:
         - gdp_service_2020: GDP value of self in service sector in 2020
         - gdp_industry_2020: GDP value of self in industry sector in 2020
         - gdp_agriculture_forestry_fishing_2020: GDP value of self in agriculture section in 2020
-        - unemployment_2016: unemployment value of 'self' reported in year 2016
-        - unemployment_2017: unemployment value of 'self' reported in year 2017
-        - unemployment_2018: unemployment value of 'self' reported in year 2018
-        - unemployment_2019: unemployment value of 'self' reported in year 2019
-        - unemployment_2020: unemployment value of 'self' reported in year 2020
+        - unemployment_2016: unemployment rate of 'self' reported in year 2016
+        - unemployment_2017: unemployment rate of 'self' in year 2017
+        - unemployment_2018: unemployment rate of 'self' in year 2018
+        - unemployment_2019: unemployment rate of 'self' in year 2019
+        - unemployment_2020: unemployment rate of 'self' in year 2020
 
     Representation Invariants:
         - self.name != ''
-
-
+        - (self.gdp_2016 == '' or self.gdp_2016 >= 0) and \
+        (self.gdp_2017 == '' or self.gdp_2017 >= 0) and \
+        (self.gdp_2018 == '' or self.gdp_2018 >= 0) and \
+        (self.gdp_2019 == '' or self.gdp_2019 >= 0) and \
+        (self.gdp_2020 == '' or self.gdp_2020 >= 0)
+        - self.gdp_2016 in {1, 2, 3, 4, ''} and self.gdp_2017 in {1, 2, 3, 4, ''} and \
+        self.gdp_2018 in {1, 2, 3, 4, ''} and self.gdp_2019 in {1, 2, 3, 4, ''} and \
+        self.gdp_2020 in {1, 2, 3, 4, ''}
     """
-
     def __init__(self, name: str) -> None:
         self.name = name
 
@@ -115,15 +136,20 @@ def populate_dictionary() -> tuple[dict[str, Country], dict[str, str]]:
             # map the name to a Country instance and the code to the name
             country_dict[name] = Country(name)
             code_dict[name] = code
-
     # return both accumulators
     return country_dict, code_dict
 
 
 def populate_attribute_name(country_dict: dict, filename: str, lines: int, attributes: [str],
                             columns: [int], name_col: int) -> None:
-    """ Populate the attributes of Country instance attribute where csv file contains the country
-    name.
+    """ Populate the attributes of Country instance attribute where the csv file contains the
+    desired attribute in the attributes list. 'attributes' and 'columns' are parallel lists
+    where attribute[i] can be found in columns[i] of the csv file.
+
+    Preconditions:
+        - len(attributes) == len(columns)
+        - attribute[i] is an attribute of the Country class
+        - all values in columns are less than the number of columns in the csv file row
     """
     # open csv file
     with open(filename) as file:
@@ -156,7 +182,8 @@ def get_national_gdp(country_dict: dict) -> None:
 
 
 def get_sector_gdp(country_dict: dict) -> None:
-    """ Retrieve sector gdp data from sector_gdp.csv"""
+    """ Retrieve sector gdp data from sector_gdp.csv
+    """
     # getting sector gdp attribute
     filename = 'raw_data/sector_gdp.csv'
     attributes = [
@@ -173,7 +200,7 @@ def get_sector_gdp(country_dict: dict) -> None:
 
 
 def get_unemployment(country_dict: dict) -> None:
-    """ Retrieve unemployment data from unemployment_rate.csv
+    """ Retrieve unemployment rate data from unemployment_rate.csv
     """
     filename = 'raw_data/unemployment_rate.csv'
     attributes = [
@@ -182,13 +209,6 @@ def get_unemployment(country_dict: dict) -> None:
     ]
     columns = [-5, -4, -3, -2, -1]
     populate_attribute_name(country_dict, filename, 4, attributes, columns, 0)
-
-
-def get_gdp_quartile(country_dict: dict[str, Country]) -> None:
-    """ Assign each country to a gdp_quartile for years 2016 to 2020
-    """
-    for year in range(2016, 2021):
-        get_quartile_split(country_dict, 'gdp_', year)
 
 
 def get_median(data: list[float], start: int, end: int) -> float:
@@ -233,6 +253,13 @@ def get_quartile_split(country_dict: [str, Country], root: str, year: int) -> No
             setattr(country_dict[country], f'gdp_quartile_{year}', 3)
         else:
             setattr(country_dict[country], f'gdp_quartile_{year}', 4)
+
+
+def get_gdp_quartile(country_dict: dict[str, Country]) -> None:
+    """ Assign each country to a gdp_quartile for years 2016 to 2020
+    """
+    for year in range(2016, 2021):
+        get_quartile_split(country_dict, 'gdp_', year)
 
 
 def clean_data() -> dict[str, Country]:
