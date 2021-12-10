@@ -95,8 +95,7 @@ def get_percent_of_whole_all_countries(attr: str) -> dict[str, float]:
     return country_to_percent_of_aggregate
 
 
-def get_attribute_by_gdp_quartile(root: str, year: int) -> list[list[tuple[int, int]],
-                            list[tuple[int, int]], list[tuple[int, int]], list[tuple[int, int]]]:
+def get_attribute_by_gdp_quartile(root: str, year: int) -> list[list[tuple[int, int]]]:
     """
     Returns a list of 4 lists. Each of the 4 lists contain lists with 2 elements, in the form
     (gdp, attribute) where the attribute is root + year.

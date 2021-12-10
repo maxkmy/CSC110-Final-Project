@@ -279,6 +279,7 @@ def plot_percentage_change_cluster(root: str, year: int) -> None:
     country_dict = clean_data.clean_data()
     x_data = [[], [], [], []]
     y_data = [[], [], [], []]
+    text = [[], [], [], []]
     for country in country_dict:
         quartile = getattr(country_dict[country], f'gdp_quartile_{year}')
         if quartile not in {1, 2, 3, 4}:
@@ -287,6 +288,7 @@ def plot_percentage_change_cluster(root: str, year: int) -> None:
         percentage_change = computations.get_percent_change(root, str(year), str(year - 1), country)
         x_data[quartile - 1].append(gdp)
         y_data[quartile - 1].append(percentage_change)
+        text[quartile - 1].append(country)
 
     # Create the figure
     fig = go.Figure()
@@ -313,7 +315,8 @@ def plot_percentage_change_cluster(root: str, year: int) -> None:
                 y=y_data[i],
                 mode='markers',
                 marker=dict(color=num_to_colour[i + 1]),
-                name=num_to_quartile[i + 1]
+                name=num_to_quartile[i + 1],
+                text=text[i]
             )
         )
 
@@ -380,158 +383,45 @@ def plot_percentage_change_cluster(root: str, year: int) -> None:
     )
 
     title = ' '.join([word.capitalize() for word in root.split('_')])
-    title = title + 'Percent Change in Year' + str(year)
+    title = title + '% Change in ' + str(year)
 
     # Configure the figure
     fig.update_layout(title=title,
-                      xaxis_title=f'Gdp in year {year}',
+                      xaxis_title=f'{year} Gdp',
                       yaxis_title=title)
 
     fig.show()
 
 
-def plot_percentage_change_cluster_overtime(root: str, start: int, end: int) -> None:
-    """ Plots percentage of the desired attribute from years start to end (inclusive).
+def plot_percentage_change_cluster_slider(root: str, start: int, end: int) -> None:
+    """ Plots percentage of the desired attribute from years 2016 to 2020 (inclusive).
     """
     country_dict = clean_data.clean_data()
-    # Qatar and Myanmar are outliers
-    country_dict.pop('Qatar')
     country_dict.pop('Myanmar')
-    years = list(range(start, end + 1))
-
-    fig_dict = {
-        'data': [],
-        'layout': {},
-        'frames': []
-    }
-
-    yaxis_title = ' '.join([word.capitalize() for word in root.split('_')]) + ' Percentage Change'
-    fig_dict['layout']['xaxis'] = {'title': 'GDP'}
-    fig_dict['layout']['yaxis'] = {'title': f'{yaxis_title}'}
-    fig_dict['layout']['hovermode'] = 'closest'
-    fig_dict['layout']['updatemenus'] = [
-        {
-            'buttons': [
-                {
-                    'args': [None, {'frame': {'duration': 500, 'redraw': False},
-                                    'fromcurrent': True, 'transition': {'duration': 300,
-                                                                        'easing': 'quadratic-in-out'}}],
-                    'label': 'Play',
-                    'method': 'animate'
-                },
-                {
-                    'args': [[None], {'frame': {'duration': 0, 'redraw': False},
-                                      'mode': 'immediate',
-                                      'transition': {'duration': 0}}],
-                    'label': 'Pause',
-                    'method': 'animate'
-                }
-            ],
-            'direction': 'left',
-            'pad': {'r': 10, 't': 87},
-            'showactive': False,
-            'type': 'buttons',
-            'x': 0.1,
-            'xanchor': 'right',
-            'y': 0,
-            'yanchor': 'top'
-        }
-    ]
-
-    sliders_dict = {
-        'active': 0,
-        'yanchor': 'top',
-        'xanchor': 'left',
-        'currentvalue': {
-            'font': {'size': 20},
-            'prefix': 'Year:',
-            'visible': True,
-            'xanchor': 'right',
-        },
-        'transition': {'duration': 300, 'easing': 'cubic-in-out'},
-        'pad': {'b': 10, 't': 50},
-        'len': 0.9,
-        'x': 0.1,
-        'y': 0,
-        'steps': []
-    }
-
-    num_to_colour = {
-        1: 'DarkOrange',
-        2: 'Crimson',
-        3: 'RebeccaPurple',
-        4: 'DarkGreen'
-    }
-    num_to_quartile = {
-        1: 'Low GDP',
-        2: 'Lower Middle GDP',
-        3: 'Upper Middle GDP',
-        4: 'High GDP'
-    }
-
-    year = start
-    for country in country_dict:
-        quartile = getattr(country_dict[country], f'gdp_quartile_{year}')
-        gdp = getattr(country_dict[country], f'gdp_{year}')
-        percentage_change = computations.get_percent_change(root, str(year), str(year - 1), country)
-        if type(gdp) != float or type(percentage_change) != float:
-            continue
-
-        data_dict = {
-            'x': [gdp],
-            'y': [percentage_change],
-            'mode': 'markers',
-            'text': country,
-            'marker': {
-                'color': num_to_colour[quartile]
-            }
-        }
-
-        fig_dict['data'].append(data_dict)
-
+    country_dict.pop('Qatar')
+    data = []
     min_x = min_y = float('inf')
     max_x = max_y = float('-inf')
+    quartile_to_str = {1: 'Low GDP', 2: 'Lower Middle GDP', 3: 'Higher Middle GDP', 4: 'High GDP'}
+    for country in country_dict:
+        country_data = computations.get_percent_change_over_time(root, start, end, country)
+        for i in range(len(country_data)):
+            quartile = getattr(country_dict[country], f'gdp_quartile_{start + i}')
+            gdp = getattr(country_dict[country], f'gdp_{start + i}')
+            if quartile in {1, 2, 3, 4}:
+                quartile = quartile_to_str[quartile]
+                data.append((country_data[i][0], country_data[i][1], country, quartile, gdp))
+                min_x = min(min_x, gdp)
+                max_x = max(max_x, gdp)
+                min_y = min(min_y, country_data[i][1])
+                max_y = max(max_y, country_data[i][1])
 
-    for year in years:
-        frame = {'data': [], 'name': str(year)}
-        for country in country_dict:
-            quartile = getattr(country_dict[country], f'gdp_quartile_{year}')
-            gdp = getattr(country_dict[country], f'gdp_{year}')
-            percentage_change = computations.get_percent_change(root, str(year), str(year - 1), country)
-            if type(gdp) != float or type(percentage_change) != float:
-                continue
-
-            min_x = min(min_x, gdp)
-            min_y = min(min_y, percentage_change)
-            max_x = max(max_x, gdp)
-            max_y = max(max_y, percentage_change)
-
-            data_dict = {
-                'x': [gdp],
-                'y': [percentage_change],
-                'mode': 'markers',
-                'text': country,
-                'marker': {
-                    'color': num_to_colour[quartile]
-                }
-            }
-            frame['data'].append(data_dict)
-        fig_dict['frames'].append(frame)
-        slider_step = {'args': [
-            [year],
-            {'frame': {'duration': 300, 'redraw': False},
-             'mode': 'immediate',
-             'transition': {'duration': 300}}
-        ],
-            'label': year,
-            'method': 'animate'}
-        sliders_dict['steps'].append(slider_step)
-
-    fig_dict['layout']['sliders'] = [sliders_dict]
-
-    fig = go.Figure(fig_dict)
-    fig.update_layout(showlegend=False)
-
+    attribute = ' '.join([word.capitalize() for word in root.split('_')]) + ' % Change'
+    gapminder = pd.DataFrame(data, columns=['Year', attribute, 'Country', 'Quartile', 'GDP', 'Text'])
+    fig = px.scatter(gapminder, color='Quartile', hover_name='Country', animation_frame='Year',
+                     x='GDP', y=attribute, color_discrete_sequence=px.colors.qualitative.G10)
+    fig.layout.updatemenus[0].buttons[0].args[1]["frame"]["duration"] = 1500
+    fig.update_layout(title=f'{attribute} from {start} to {end}')
     x_delta = (max_x - min_x) * 0.1
     y_delta = (max_y - min_y) * 0.1
     fig.update_xaxes(range=[min_x - x_delta, max_x + x_delta])
