@@ -38,44 +38,42 @@ def choropleth_percentage_change_slide(root: str):
     fig.show()
 
 
-def choropleth_percent_wholegdp() -> None:
+def choropleth_percent_wholegdp(start: int, end: int) -> None:
     """ Displays percentage national GDP of a country to global total GDP
 
     Sample Usage:
-    >>> choropleth_percent_wholegdp()
+    >>> choropleth_percent_wholegdp(2016, 2020)
     """
-    root = 'gpd_'
     countries = clean_data.populate_dictionary()[0]
     codes = clean_data.populate_dictionary()[1]
 
-    data2016 = computations.get_percent_of_whole_all_countries('gdp_2016')
-    data2017 = computations.get_percent_of_whole_all_countries('gdp_2017')
-    data2018 = computations.get_percent_of_whole_all_countries('gdp_2018')
-    data2019 = computations.get_percent_of_whole_all_countries('gdp_2019')
-    data2020 = computations.get_percent_of_whole_all_countries('gdp_2020')
+    data = []
+    for year in range(start, end + 1):
+        data.append(computations.get_percent_of_whole_all_countries(f'gdp_{year}'))
 
     data_so_far = []
-
     for country in countries:
-        key = country
-        if key in data2016 and key in data2017 and key in data2018 and key in data2019 and key in data2020:
-            list.append(data_so_far, (codes[country], data2016[key],
-                                      data2017[key], data2018[key],
-                                      data2019[key], data2020[key],
-                                      countries[country].name))
+        if all(country in data[i] for i in range(len(data))):
+            cur_list = [codes[country]]
+            for year in range(start, end + 1):
+                cur_list.append(data[year - start][country])
+            cur_list.append(country)
+            data_so_far.append(tuple(cur_list))
 
-    yaxis_title = [word.capitalize() for word in (root.split('_'))]
-    yaxis_title = ' '.join(yaxis_title)
+    column_name = ['Country Code']
+    for year in range(start, end + 1):
+        column_name.append(str(year))
+    column_name.append('Country Name')
 
-    df = pd.DataFrame(data_so_far, columns=['Country Code', '2016', '2017', '2018', '2019', '2020', 'Country Name'])
+    df = pd.DataFrame(data_so_far, columns=column_name)
     fig = go.Figure()
 
-    fig.update_layout(title=f'Global  {yaxis_title} Percentage of Countries (Please select a specific year)')
+    fig.update_layout(title=f'Global GDP Percentage of Countries (Please select a specific year)')
 
     buttons = []
 
-    for i in range(5):
-        year = str(2016 + i)
+    for i in range(end - start + 1):
+        year = str(start + i)
         fig.add_trace(go.Choropleth(
             locations=df['Country Code'],
             z=df[year],
@@ -91,8 +89,8 @@ def choropleth_percent_wholegdp() -> None:
         buttons.append(dict(
             label=year,
             method='update',
-            args=[{'visible': [x == i for x in range(5)]},
-                  {'title': f'Global {yaxis_title} Percentage of Countries in  {year}',
+            args=[{'visible': [x == i for x in range(end - start + 1)]},
+                  {'title': f'Global GDP Percentage of Countries in  {year}',
                    'showlegend': True}]))
 
     fig.update_layout(
@@ -124,7 +122,7 @@ def choropleth_percent_wholegdp_slider(start: int, end: int) -> None:
 
     data_so_far = []
     for country in countries:
-        if all(country in data[year] for year in range(len(data))):
+        if all(country in data[i] for i in range(len(data))):
             for year in range(start, end + 1):
                 data_so_far.append((codes[country], year, data[year - start][country], country))
 
