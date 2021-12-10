@@ -135,7 +135,7 @@ def get_aggregate_quartile(root: str, desired_quartile: int, year: int) -> float
         quartile = getattr(country_dict[country], f'gdp_quartile_{year}')
         if desired_quartile == quartile:
             to_add = getattr(country_dict[country], attr)
-            if to_add != '':
+            if type(to_add) == float:
                 accum += to_add
     return accum
 
