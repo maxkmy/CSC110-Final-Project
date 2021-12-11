@@ -45,7 +45,7 @@ def choropleth_percentage_change_slide(root: str, start: int, end: int):
                         animation_frame='Year', color_continuous_scale=px.colors.sequential.RdBu[
                                                                        ::-1],
                         projection='natural earth')
-    fig.update_layout(title=f'{yaxis_title} Percent Change of Countries Through Years ({start}-{end})')
+    fig.update_layout(title=f'{yaxis_title}Percent Change of Countries Through Years ({start + 1}-{end})')
     fig.layout.updatemenus[0].buttons[0].args[1]["frame"]["duration"] = 1500
     fig.show()
 
@@ -74,16 +74,13 @@ def choropleth_percent_difference_wholegdp(start: int, end: int):
             data = data_end[country] - data_start[country]
             data_so_far.append((codes[country], data, country))
 
-    yaxis_title = [word.capitalize() for word in (root.split('_'))]
-    yaxis_title = ' '.join(yaxis_title)
-
     # create the dataframe
     df = pd.DataFrame(data_so_far, columns=['Country Code', 'Percent Difference %', 'Country Name'])
 
     # create and configure the figure
     fig = go.Figure()
 
-    fig.update_layout(title=f'{yaxis_title} Global GDP Percentage Difference of Countries Between {start} and {end}')
+    fig.update_layout(title=f'GDP as a % Global GDP Difference between {start + 1} and {end}')
 
     fig.add_trace(go.Choropleth(
         locations=df['Country Code'],
@@ -143,7 +140,10 @@ def plot_percentage_change_cluster_slider(root: str, start: int, end: int) -> No
                 min_y = min(min_y, country_data[i][1])
                 max_y = max(max_y, country_data[i][1])
 
-    attribute = ' '.join([word.capitalize() for word in root.split('_')]) + '% Change'
+    attribute = ' '.join([word.capitalize() for word in root.split('_')])
+    if attribute == 'Gdp ':
+        attribute = attribute.upper()
+    attribute += '% Change'
 
     # create the dafaframe
     gapminder = pd.DataFrame(data, columns=['Year', attribute, 'Country', 'Quartile', 'GDP'])
@@ -152,7 +152,7 @@ def plot_percentage_change_cluster_slider(root: str, start: int, end: int) -> No
     fig = px.scatter(gapminder, color='Quartile', hover_name='Country', animation_frame='Year',
                      x='GDP', y=attribute, color_discrete_sequence=px.colors.qualitative.G10)
     fig.layout.updatemenus[0].buttons[0].args[1]["frame"]["duration"] = 1500
-    fig.update_layout(title=f'{attribute} from {start} to {end}')
+    fig.update_layout(title=f'{attribute} from {start + 1} to {end}')
 
     # make sure that all points over the years can be captured in the xy-plane
     x_delta = (max_x - min_x) * 0.1
@@ -173,7 +173,7 @@ def visualize_aggregates(start: int, end: int) -> None:
     >>> visualize_aggregates(2016, 2020)
     """
     sectors = ['Manufacturing', 'Service', 'Industry', 'Agriculture']
-    quartiles = ['Lower', 'Lower-Middle', 'Upper-Middle', 'High']
+    quartiles = ['Low GDP', 'Lower Middle GDP', 'Upper Middle GDP', 'High GDP']
     aq_m, aq_s, aq_i, aq_a = {}, {}, {}, {}
 
     # Execute computations
