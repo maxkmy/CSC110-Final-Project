@@ -3,15 +3,17 @@
 This Python module contains contains the code necessary to run the entire program. When run, the module:
     1. Loads the necessary files from the datasets
     2. Performs the relevant computations on the data
-    3. Produces visualizations investigating:
-        the effect of COVID-19 on the global wealth gap between developed and undeveloped countries.
+    3. Produces visualizations investigating the research question:
+        To what extent did COVID-19 cause the wealth gap to increase between developed and undeveloped countries?
 """
 import visualizations
 
 
 def main() -> None:
-    """Executes visualizations. Each visualization function 1) loads the necessary files from the datasets,
-    2) performs the relevant computations on the data, and 3) produces a visualization.
+    """Executes visualizations. Each visualization function:
+    1) loads the necessary files from the datasets,
+    2) performs the relevant computations on the data,
+    3) produces a visualization.
 
     """
     visualizations.choropleth_percentage_change_slide('gdp_', 2016, 2020)
