@@ -26,7 +26,6 @@ def choropleth_percentage_change_slide(root: str, start: int, end: int):
     countries, codes = clean_data.populate_dictionary()
     # Qatar and Vietnam are outliers which prevents proper colour differences from being displayed
     # Qatar and Vietnam has extremely high unemployement rate % change after COVID-19
-
     if root == 'unemployment_':
         countries.pop('Qatar')
         countries.pop('Vietnam')
@@ -119,10 +118,11 @@ def plot_percentage_change_cluster_slider(root: str, start: int, end: int) -> No
     >>> plot_percentage_change_cluster_slider('gdp_', 2016, 2020)
     """
     country_dict = clean_data.clean_data()
-    # Myanmar and Qatar are outliers for unemployment rate % change. They spike significantly
-    # and prevent proper y-axis scaling of the graph
-    # country_dict.pop('Myanmar')
-    # country_dict.pop('Qatar')
+    # Qatar and Vietnam are outliers which prevents proper colour differences from being displayed
+    # Qatar and Vietnam has extremely high unemployement rate % change after COVID-19
+    if root == 'unemployment_':
+        country_dict.pop('Qatar')
+        country_dict.pop('Vietnam')
     data = []
     min_x = min_y = float('inf')
     max_x = max_y = float('-inf')
