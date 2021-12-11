@@ -1,4 +1,4 @@
-""" CSC110 Fall 2021 Final Project: clean_data
+""" CSC110 Fall 2021 Final Project: computations
 
 This Python module contains several function headers and descriptions. Functions located
 in this file are meant to:
