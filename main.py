@@ -1,0 +1,27 @@
+""" CSC110 Fall 2021 Final Project: main
+
+This Python module contains contains the code necessary to run the entire program. When run, the module:
+    1. Loads the necessary files from the datasets
+    2. Performs the relevant computations on the data
+    3. Produces visualizations investigating:
+        the effect of COVID-19 on the global wealth gap between developed and undeveloped countries.
+"""
+import visualizations
+
+
+def main() -> None:
+    """Executes visualizations. Each visualization function 1) loads the necessary files from the datasets,
+    2) performs the relevant computations on the data, and 3) produces a visualization.
+
+    """
+    visualizations.choropleth_percentage_change_slide('gdp_', 2016, 2020)
+    visualizations.choropleth_percentage_change_slide('unemployment_', 2016, 2020)
+    visualizations.choropleth_percent_wholegdp_slider(2016, 2020)
+    visualizations.choropleth_percent_difference_wholegdp(2016, 2020)
+    visualizations.plot_percentage_change_cluster_slider('gdp_', 2016, 2020)
+    visualizations.plot_attribute_cluster_slider('unemployment_', 2016, 2020)
+    visualizations.visualize_aggregates(2016, 2020)
+
+
+if __name__ == "__main__":
+    main()
