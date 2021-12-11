@@ -12,7 +12,7 @@ import clean_data
 import computations
 
 
-def choropleth_percentage_change_slide(root: str, start: int, end: int):
+def map_percentage_change(root: str, start: int, end: int) -> None:
     """Displays global chloropleth map representing percentage change of 'Root' over the years
     [start, end] with time slider.
 
@@ -20,8 +20,8 @@ def choropleth_percentage_change_slide(root: str, start: int, end: int):
         - root != ''
         - 0 <= start < end
 
-    >>> choropleth_percentage_change_slide('gdp_', 2016, 2020)
-    >>> choropleth_percentage_change_slide('unemployment_', 2016, 2020)
+    >>> map_percentage_change('gdp_', 2016, 2020)
+    >>> map_percentage_change('unemployment_', 2016, 2020)
     """
     countries, codes = clean_data.populate_dictionary()
     # Qatar and Vietnam are outliers which prevents proper colour differences from being displayed
@@ -35,37 +35,38 @@ def choropleth_percentage_change_slide(root: str, start: int, end: int):
 
     data_so_far = []
     for country in countries:
-        ordered_data = computations.get_percent_change_over_time(root, start, end, countries[country].name)
+        ordered_data = computations.get_percent_change_over_time(root, start, end,
+                                                                 countries[country].name)
         for i in range(end - start):
-            list.append(data_so_far, (codes[country], 2016 + i + 1, ordered_data[i][1], countries[country].name))
+            list.append(data_so_far, (codes[country], 2016 + i + 1, ordered_data[i][1],
+                                      countries[country].name))
 
-    gapminder = pd.DataFrame(data_so_far, columns=['Country Code', 'Year', 'Percent Change %', 'Country Name'])
+    gapminder = pd.DataFrame(data_so_far, columns=['Country Code', 'Year', 'Percent Change %',
+                                                   'Country Name'])
 
-    fig = px.choropleth(gapminder, locations='Country Code', color='Percent Change %', hover_name='Country Name',
-                        animation_frame='Year', color_continuous_scale=px.colors.sequential.RdBu[
-                                                                       ::-1],
+    fig = px.choropleth(gapminder, locations='Country Code', color='Percent Change %',
+                        hover_name='Country Name', animation_frame='Year',
+                        color_continuous_scale=px.colors.sequential.RdBu[::-1],
                         projection='natural earth')
-    fig.update_layout(title=f'{yaxis_title}Percent Change of Countries Through Years ({start + 1}-{end})')
+    fig.update_layout(title=f'{yaxis_title}Percent Change of Countries Through Years \
+    ({start + 1}-{end})')
     fig.layout.updatemenus[0].buttons[0].args[1]["frame"]["duration"] = 1500
     fig.show()
 
 
-def choropleth_percent_difference_wholegdp(start: int, end: int):
+def map_percent_difference_gdp(start: int, end: int) -> None:
     """ Display the difference in global GDP all countries contribute to in year 'start' and year
     'end' through a chropleth map
 
     Preconditions:
         - 0 <= start < end
 
-    >>> choropleth_percent_difference_wholegdp(2016, 2020)
+    >>> map_percent_difference_gdp(2016, 2020)
     """
     root = 'gdp_'
     countries, codes = clean_data.populate_dictionary()
-    year_start = root + str(start)
-    year_end = root + str(end)
-    data_start = computations.get_percent_of_whole_all_countries(year_start)
-    data_end = computations.get_percent_of_whole_all_countries(year_end)
-
+    data_start = computations.get_percent_of_whole(root + str(start))
+    data_end = computations.get_percent_of_whole(root + str(end))
     data_so_far = []
 
     # iterate through all countries and compute the % change
@@ -104,7 +105,7 @@ def choropleth_percent_difference_wholegdp(start: int, end: int):
     fig.show()
 
 
-def plot_percentage_change_cluster_slider(root: str, start: int, end: int) -> None:
+def scatter_percentage_change(root: str, start: int, end: int) -> None:
     """ Plots percentage change of the desired attribute from years [start, end] on a scatter plot
     where points are in the form (GDP, attribute % change)
 
@@ -112,7 +113,7 @@ def plot_percentage_change_cluster_slider(root: str, start: int, end: int) -> No
         - root != ''
         - 0 <= start < end
 
-    >>> plot_percentage_change_cluster_slider('gdp_', 2016, 2020)
+    >>> scatter_percentage_change('gdp_', 2016, 2020)
     """
     country_dict = clean_data.clean_data()
     # Qatar and Vietnam are outliers which affects the scaling of y-axes
@@ -121,8 +122,8 @@ def plot_percentage_change_cluster_slider(root: str, start: int, end: int) -> No
         country_dict.pop('Qatar')
         country_dict.pop('Vietnam')
     data = []
-    min_x = min_y = float('inf')
-    max_x = max_y = float('-inf')
+    # xy_min_max is in the form [min_x, min_y, max_x, max_y]
+    xy_min_max = [float('-inf'), float('-inf'), float('inf'), float('inf')]
     quartile_to_str = {1: 'Low GDP', 2: 'Lower Middle GDP', 3: 'Higher Middle GDP', 4: 'High GDP'}
 
     # iterate over all countries
@@ -135,10 +136,10 @@ def plot_percentage_change_cluster_slider(root: str, start: int, end: int) -> No
             if quartile in {1, 2, 3, 4}:
                 quartile = quartile_to_str[quartile]
                 data.append((country_data[i][0], country_data[i][1], country, quartile, gdp))
-                min_x = min(min_x, gdp)
-                max_x = max(max_x, gdp)
-                min_y = min(min_y, country_data[i][1])
-                max_y = max(max_y, country_data[i][1])
+                xy_min_max[0] = min(xy_min_max[0], gdp)
+                xy_min_max[1] = min(xy_min_max[1], gdp)
+                xy_min_max[2] = max(xy_min_max[2], country_data[i][1])
+                xy_min_max[3] = max(xy_min_max[3], country_data[i][1])
 
     attribute = ' '.join([word.capitalize() for word in root.split('_')])
     if attribute == 'Gdp ':
@@ -155,10 +156,10 @@ def plot_percentage_change_cluster_slider(root: str, start: int, end: int) -> No
     fig.update_layout(title=f'{attribute} from {start + 1} to {end}')
 
     # make sure that all points over the years can be captured in the xy-plane
-    x_delta = (max_x - min_x) * 0.1
-    y_delta = (max_y - min_y) * 0.1
-    fig.update_xaxes(range=[min_x - x_delta, max_x + x_delta])
-    fig.update_yaxes(range=[min_y - y_delta, max_y + y_delta])
+    fig.update_xaxes(range=[xy_min_max[0] - (xy_min_max[2] - xy_min_max[0]) * 0.1, xy_min_max[2] + (
+                            xy_min_max[2] - xy_min_max[0]) * 0.1])
+    fig.update_yaxes(range=[xy_min_max[1] - (xy_min_max[3] - xy_min_max[1]) * 0.1, xy_min_max[3] + (
+                            xy_min_max[3] - xy_min_max[1]) * 0.1])
 
     # display the figure
     fig.show()
@@ -185,9 +186,8 @@ def visualize_aggregates(start: int, end: int) -> None:
                                                                          quartile, year)
             aq_i[(year, quartile)] = computations.get_aggregate_quartile('gdp_industry_',
                                                                          quartile, year)
-            aq_a[(year, quartile)] = \
-                computations.get_aggregate_quartile('gdp_agriculture_forestry_fishing_',
-                                                    quartile, year)
+            aq_a[(year, quartile)] = computations.get_aggregate_quartile('gdp_agriculture_',
+                                                                         quartile, year)
 
     # create the figure
     fig = go.Figure()
@@ -216,16 +216,14 @@ def visualize_aggregates(start: int, end: int) -> None:
                             f'by Quartile',
                    'showlegend': True}]))
 
-    sliders = [dict(
-        active=0,
-        currentvalue={"prefix": "Year: "},
-        pad={"t": 50},
-        steps=steps
-    )]
-
     # configure the figure
     fig.update_layout(
-        sliders=sliders,
+        sliders=[dict(
+            active=0,
+            currentvalue={"prefix": "Year: "},
+            pad={"t": 50},
+            steps=steps
+        )],
         xaxis_title='Sector',
         yaxis_title='% of Aggregate GDP',
         title=f'Aggregate Sector GDP as a % of Aggregate GDP for {start}-{end} '
@@ -234,3 +232,20 @@ def visualize_aggregates(start: int, end: int) -> None:
 
     # display the figure
     fig.show()
+
+
+if __name__ == '__main__':
+    import python_ta
+    import python_ta.contracts
+
+    python_ta.contracts.DEBUG_CONTRACTS = False
+    python_ta.contracts.check_all_contracts()
+
+    python_ta.check_all(config={
+        'allowed-io': [],
+        'extra-imports': ['plotly.graph_objects', 'plotly.express', 'pandas', 'clean_data',
+                          'computations'],
+        'max-line-length': 100,
+        'max-nested-blocks': 4,
+        'disable': ['R1705', 'C0200']
+    })

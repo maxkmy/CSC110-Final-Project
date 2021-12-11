@@ -5,11 +5,12 @@ in this file are meant to:
     1. Compute certain metrics of interest for visualization
 """
 
-from clean_data import clean_data
 import math
+from clean_data import clean_data
 
 
-def get_percent_change(root: str, new_attr_suffix: str, old_attr_suffix, country: str) -> float:
+def get_percent_change(root: str, new_attr_suffix: str, old_attr_suffix: str, country: str) -> \
+        float:
     """ Calculates the percent change between the attributes (root + new_attr_suffix) and
     (root + old_attr_suffix).
     """
@@ -23,7 +24,7 @@ def get_percent_change(root: str, new_attr_suffix: str, old_attr_suffix, country
     new = getattr(country, new_attr)
     old = getattr(country, old_attr)
     # return percentage change
-    if type(old) == float and type(new) == float:
+    if isinstance(old, float) and isinstance(new, float):
         return (new - old) / old * 100
     return float('nan')
 
@@ -58,7 +59,7 @@ def get_aggregate(attribute: str) -> float:
         # retrieve attribute from the country's Country instance
         to_add = getattr(country_dict[country], attribute)
         # if the attribute is available, add it to the accumulator
-        if type(to_add) == float:
+        if isinstance(to_add, float):
             accum += to_add
     # return the accumulator
     return accum
@@ -78,7 +79,7 @@ def get_percent_of_aggregate(aggregate: float, attr: str, country: str) -> float
     return float('nan')
 
 
-def get_percent_of_whole_all_countries(attr: str) -> dict[str, float]:
+def get_percent_of_whole(attr: str) -> dict[str, float]:
     """ Returns a mapping of the percentage the attribute takes up of the aggregate for all
     countries. If the country does not have the attribute, return float('nan') (Not a number).
     The return type is a dict where a country's name maps to its percentage of whole.
@@ -111,7 +112,7 @@ def get_attribute_by_gdp_quartile(root: str, year: int) -> list[list[tuple[int, 
     for country in country_dict:
         gdp = getattr(country_dict[country], f'gdp_{year}')
         attr_val = getattr(country_dict[country], attr)
-        if type(attr_val) != float or type(gdp) != float:
+        if not isinstance(attr_val, float) or not isinstance(gdp, float):
             continue
         quartile = getattr(country_dict[country], gdp_quartile)
         if quartile == 1:
@@ -138,7 +139,7 @@ def get_aggregate_quartile(root: str, desired_quartile: int, year: int) -> float
         quartile = getattr(country_dict[country], f'gdp_quartile_{year}')
         if desired_quartile == quartile:
             to_add = getattr(country_dict[country], attr)
-            if type(to_add) == float:
+            if isinstance(to_add, float):
                 accum += to_add
     return accum
 
@@ -157,3 +158,19 @@ def get_xy_data(ordered_data: list[tuple[int, float]]) -> tuple[list[int], list[
         x_data.append(x)
         y_data.append(y)
     return x_data, y_data
+
+
+if __name__ == '__main__':
+    import python_ta
+    import python_ta.contracts
+
+    python_ta.contracts.DEBUG_CONTRACTS = False
+    python_ta.contracts.check_all_contracts()
+
+    python_ta.check_all(config={
+        'allowed-io': [],
+        'extra-imports': ['clean_data', 'math'],
+        'max-line-length': 100,
+        'max-nested-blocks': 4,
+        'disable': ['R1705', 'C0200']
+    })

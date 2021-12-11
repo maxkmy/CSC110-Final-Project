@@ -7,6 +7,7 @@ in this file are meant to:
 """
 
 import csv
+from typing import Optional
 
 
 class Country:
@@ -70,6 +71,43 @@ class Country:
     >>> Country('Canada')
     Country(name='Canada')
     """
+    name: str
+    gdp_2016: Optional[float]
+    gdp_2017: Optional[float]
+    gdp_2018: Optional[float]
+    gdp_2019: Optional[float]
+    gdp_2020: Optional[float]
+    gdp_quartile_2016: Optional[float]
+    gdp_quartile_2017: Optional[float]
+    gdp_quartile_2018: Optional[float]
+    gdp_quartile_2019: Optional[float]
+    gdp_quartile_2020: Optional[float]
+    gdp_manufacturing_2016: Optional[float]
+    gdp_service_2016: Optional[float]
+    gdp_industry_2016: Optional[float]
+    gdp_agriculture_2016: Optional[float]
+    gdp_manufacturing_2017: Optional[float]
+    gdp_service_2017: Optional[float]
+    gdp_industry_2017: Optional[float]
+    gdp_agriculture_2017: Optional[float]
+    gdp_manufacturing_2018: Optional[float]
+    gdp_service_2018: Optional[float]
+    gdp_industry_2018: Optional[float]
+    gdp_agriculture_2018: Optional[float]
+    gdp_manufacturing_2019: Optional[float]
+    gdp_service_2019: Optional[float]
+    gdp_industry_2019: Optional[float]
+    gdp_agriculture_2019: Optional[float]
+    gdp_manufacturing_2020: Optional[float]
+    gdp_service_2020: Optional[float]
+    gdp_industry_2020: Optional[float]
+    gdp_agriculture_2020: Optional[float]
+    unemployment_2016: Optional[float]
+    unemployment_2017: Optional[float]
+    unemployment_2018: Optional[float]
+    unemployment_2019: Optional[float]
+    unemployment_2020: Optional[float]
+
     def __init__(self, name: str) -> None:
         self.name = name
 
@@ -88,23 +126,23 @@ class Country:
         self.gdp_manufacturing_2016 = None
         self.gdp_service_2016 = None
         self.gdp_industry_2016 = None
-        self.gdp_agriculture_forestry_fishing_2016 = None
+        self.gdp_agriculture_2016 = None
         self.gdp_manufacturing_2017 = None
         self.gdp_service_2017 = None
         self.gdp_industry_2017 = None
-        self.gdp_agriculture_forestry_fishing_2017 = None
+        self.gdp_agriculture_2017 = None
         self.gdp_manufacturing_2018 = None
         self.gdp_service_2018 = None
         self.gdp_industry_2018 = None
-        self.gdp_agriculture_forestry_fishing_2018 = None
+        self.gdp_agriculture_2018 = None
         self.gdp_manufacturing_2019 = None
         self.gdp_service_2019 = None
         self.gdp_industry_2019 = None
-        self.gdp_agriculture_forestry_fishing_2019 = None
+        self.gdp_agriculture_2019 = None
         self.gdp_manufacturing_2020 = None
         self.gdp_service_2020 = None
         self.gdp_industry_2020 = None
-        self.gdp_agriculture_forestry_fishing_2020 = None
+        self.gdp_agriculture_2020 = None
 
         self.unemployment_2016 = None
         self.unemployment_2017 = None
@@ -142,7 +180,7 @@ def populate_dictionary() -> tuple[dict[str, Country], dict[str, str]]:
 
 
 def populate_attribute_name(country_dict: dict, filename: str, lines: int, attributes: [str],
-                            columns: [int], name_col: int) -> None:
+                            columns: [int]) -> None:
     """ Populate the attributes of Country instance attribute where the csv file contains the
     desired attribute in the attributes list. 'attributes' and 'columns' are parallel lists
     where attribute[i] can be found in columns[i] of the csv file.
@@ -161,7 +199,7 @@ def populate_attribute_name(country_dict: dict, filename: str, lines: int, attri
         # iterate through all the remaining rows
         for row in reader:
             # get the name of the country
-            country = row[name_col].capitalize()
+            country = row[0].capitalize()
             # check country is in country_dict
             if country in country_dict:
                 # iterate through all attributes and their respective columns
@@ -179,7 +217,7 @@ def get_national_gdp(country_dict: dict) -> None:
     filename = 'raw_data/national_gdp.csv'
     attributes = ['gdp_2016', 'gdp_2017', 'gdp_2018', 'gdp_2019', 'gdp_2020']
     columns = [-5, -4, -3, -2, -1]
-    populate_attribute_name(country_dict, filename, 4, attributes, columns, 0)
+    populate_attribute_name(country_dict, filename, 4, attributes, columns)
 
 
 def get_sector_gdp(country_dict: dict) -> None:
@@ -189,15 +227,15 @@ def get_sector_gdp(country_dict: dict) -> None:
     filename = 'raw_data/sector_gdp.csv'
     attributes = [
         'gdp_manufacturing_2016', 'gdp_service_2016', 'gdp_industry_2016',
-        'gdp_agriculture_forestry_fishing_2016', 'gdp_manufacturing_2017',
-        'gdp_service_2017', 'gdp_industry_2017', 'gdp_agriculture_forestry_fishing_2017',
+        'gdp_agriculture_2016', 'gdp_manufacturing_2017',
+        'gdp_service_2017', 'gdp_industry_2017', 'gdp_agriculture_2017',
         'gdp_manufacturing_2018', 'gdp_service_2018', 'gdp_industry_2018',
-        'gdp_agriculture_forestry_fishing_2018', 'gdp_manufacturing_2019', 'gdp_service_2019',
-        'gdp_industry_2019', 'gdp_agriculture_forestry_fishing_2019', 'gdp_manufacturing_2020',
-        'gdp_service_2020', 'gdp_industry_2020', 'gdp_agriculture_forestry_fishing_2020'
+        'gdp_agriculture_2018', 'gdp_manufacturing_2019', 'gdp_service_2019',
+        'gdp_industry_2019', 'gdp_agriculture_2019', 'gdp_manufacturing_2020',
+        'gdp_service_2020', 'gdp_industry_2020', 'gdp_agriculture_2020'
     ]
     columns = list(range(2, 22))
-    populate_attribute_name(country_dict, filename, 1, attributes, columns, 0)
+    populate_attribute_name(country_dict, filename, 1, attributes, columns)
 
 
 def get_unemployment(country_dict: dict) -> None:
@@ -209,7 +247,7 @@ def get_unemployment(country_dict: dict) -> None:
         'unemployment_2020'
     ]
     columns = [-5, -4, -3, -2, -1]
-    populate_attribute_name(country_dict, filename, 4, attributes, columns, 0)
+    populate_attribute_name(country_dict, filename, 4, attributes, columns)
 
 
 def get_median(data: list[float], start: int, end: int) -> float:
@@ -242,7 +280,7 @@ def get_quartile_split(country_dict: [str, Country], root: str, year: int) -> No
     data = []
     for country in country_dict:
         val = getattr(country_dict[country], attr)
-        if type(val) == float:
+        if isinstance(val, float):
             data.append(val)
     data.sort()
     median = get_median(data, 0, len(data))
@@ -255,7 +293,7 @@ def get_quartile_split(country_dict: [str, Country], root: str, year: int) -> No
 
     for country in country_dict:
         val = getattr(country_dict[country], attr)
-        if type(val) != float:
+        if not isinstance(val, float):
             continue
         if val <= lower_half_median:
             setattr(country_dict[country], f'gdp_quartile_{year}', 1)
@@ -288,3 +326,19 @@ def clean_data() -> dict[str, Country]:
     get_gdp_quartile(country_dict, 2016, 2020)
     # return cleaned data
     return country_dict
+
+
+if __name__ == '__main__':
+    import python_ta
+    import python_ta.contracts
+
+    python_ta.contracts.DEBUG_CONTRACTS = False
+    python_ta.contracts.check_all_contracts()
+
+    python_ta.check_all(config={
+        'allowed-io': ['populate_dictionary', 'populate_attribute_name'],
+        'extra-imports': ['python_ta.contracts', 'csv', 'typing'],
+        'max-line-length': 100,
+        'max-nested-blocks': 4,
+        'disable': ['R1705', 'C0200']
+    })
