@@ -26,7 +26,9 @@ def choropleth_percentage_change_slide(root: str, start: int, end: int):
     countries, codes = clean_data.populate_dictionary()
     # Qatar is an outlier which prevents proper colour differences from being displayed
     # Qatar has extremely high unemployement rate % change after COVID-19
-    countries.pop('Qatar')
+    if root == 'unemployment_':
+        countries.pop('Qatar')
+        countries.pop('Vietnam')
 
     yaxis_title = [word.capitalize() for word in (root.split('_'))]
     yaxis_title = ' '.join(yaxis_title)
@@ -40,7 +42,8 @@ def choropleth_percentage_change_slide(root: str, start: int, end: int):
     gapminder = pd.DataFrame(data_so_far, columns=['Country Code', 'Year', 'Percent Change %', 'Country Name'])
 
     fig = px.choropleth(gapminder, locations='Country Code', color='Percent Change %', hover_name='Country Name',
-                        animation_frame='Year', color_continuous_scale=px.colors.sequential.RdBu,
+                        animation_frame='Year', color_continuous_scale=px.colors.sequential.RdBu[
+                                                                       ::-1],
                         projection='natural earth')
     fig.update_layout(title=f'{yaxis_title} Percent Change of Countries Through Years ({start}-{end})')
     fig.layout.updatemenus[0].buttons[0].args[1]["frame"]["duration"] = 1500
@@ -85,14 +88,14 @@ def choropleth_percent_wholegdp_slider(start: int, end: int) -> None:
     fig.show()
 
 
-def choropleth_percent_difference_wholegdp(start: str, end: str):
+def choropleth_percent_difference_wholegdp(start: int, end: int):
     """ Display the difference in global GDP all countries contribute to in year 'start' and year
     'end' through a chropleth map
 
     Preconditions:
         - 0 <= start < end
 
-    >>> choropleth_percent_difference_wholegdp('2016', '2020')
+    >>> choropleth_percent_difference_wholegdp(2016, 2020)
     """
     root = 'gdp_'
     countries, codes = clean_data.populate_dictionary()
