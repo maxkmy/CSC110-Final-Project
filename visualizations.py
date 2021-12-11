@@ -51,44 +51,6 @@ def choropleth_percentage_change_slide(root: str, start: int, end: int):
     fig.show()
 
 
-def choropleth_percent_wholegdp_slider(start: int, end: int) -> None:
-    """ Displays percentage national GDP of a country to global total GDP with built-in time slider
-    for the years [start, end]
-
-    Preconditions:
-        - 0 <= start < end
-
-    >>> choropleth_percent_wholegdp_slider(2016, 2020)
-    """
-    countries, codes = clean_data.populate_dictionary()
-
-    data = []
-    # iterate over all years and get gdp of country / aggregate gdp for years [start, end]
-    for year in range(start, end + 1):
-        data.append(computations.get_percent_of_whole_all_countries(f'gdp_{year}'))
-
-    # add all data from above into the desired format
-    data_so_far = []
-    for country in countries:
-        if all(country in data[i] for i in range(len(data))):
-            for year in range(start, end + 1):
-                data_so_far.append((codes[country], year, data[year - start][country], country))
-
-    # create the dataframe
-    gapminder = pd.DataFrame(data_so_far, columns=['Country Code', 'Year', 'Percent %', 'Country Name'])
-
-    # create and configure the figure
-    fig = px.choropleth(gapminder, locations='Country Code', color='Percent %', hover_name='Country Name',
-                        animation_frame='Year', range_color=[0, 3], color_continuous_scale=px.colors.sequential.Agsunset[
-                                                                                           ::-1],
-                        projection='natural earth')
-    fig.update_layout(title=f'Global GDP Percentage of Countries Throughout Years ({start}-{end})')
-    fig.layout.updatemenus[0].buttons[0].args[1]["frame"]["duration"] = 1500
-
-    # display the figure
-    fig.show()
-
-
 def choropleth_percent_difference_wholegdp(start: int, end: int):
     """ Display the difference in global GDP all countries contribute to in year 'start' and year
     'end' through a chropleth map
@@ -159,8 +121,8 @@ def plot_percentage_change_cluster_slider(root: str, start: int, end: int) -> No
     country_dict = clean_data.clean_data()
     # Myanmar and Qatar are outliers for unemployment rate % change. They spike significantly
     # and prevent proper y-axis scaling of the graph
-    country_dict.pop('Myanmar')
-    country_dict.pop('Qatar')
+    # country_dict.pop('Myanmar')
+    # country_dict.pop('Qatar')
     data = []
     min_x = min_y = float('inf')
     max_x = max_y = float('-inf')
@@ -193,58 +155,6 @@ def plot_percentage_change_cluster_slider(root: str, start: int, end: int) -> No
     fig.update_layout(title=f'{attribute} from {start} to {end}')
 
     # make sure that all points over the years can be captured in the xy-plane
-    x_delta = (max_x - min_x) * 0.1
-    y_delta = (max_y - min_y) * 0.1
-    fig.update_xaxes(range=[min_x - x_delta, max_x + x_delta])
-    fig.update_yaxes(range=[min_y - y_delta, max_y + y_delta])
-
-    # display the figure
-    fig.show()
-
-
-def plot_attribute_cluster_slider(root: str, start: int, end: int) -> None:
-    """ Plots percentage change of the desired attribute from years [start, end] on a scatter plot
-    where points are in the form (GDP, attribute)
-
-    Preconditions:
-        - root != ''
-        - 0 <= start < end
-
-    >>> plot_attribute_cluster_slider('unemployment_', 2016, 2020)
-    """
-    country_dict = clean_data.clean_data()
-    data = []
-    min_x = min_y = float('inf')
-    max_x = max_y = float('-inf')
-    quartile_to_str = {1: 'Low GDP', 2: 'Lower Middle GDP', 3: 'Higher Middle GDP', 4: 'High GDP'}
-    # iterate over all countries
-    for country in country_dict:
-        for year in range(start, end + 1):
-            quartile = getattr(country_dict[country], f'gdp_quartile_{year}')
-            gdp = getattr(country_dict[country], f'gdp_{year}')
-            attribute = getattr(country_dict[country], root + str(year))
-            # verify that the country has a GDP quartile (thus verifying GDP data exists)
-            # verify that the desired attribute exists
-            if quartile in {1, 2, 3, 4} and type(attribute) == float:
-                quartile = quartile_to_str[quartile]
-                data.append((year, attribute, country, quartile, gdp))
-                min_x = min(min_x, gdp)
-                max_x = max(max_x, gdp)
-                min_y = min(min_y, attribute)
-                max_y = max(max_y, attribute)
-
-    attribute = ' '.join([word.capitalize() for word in root.split('_')])
-
-    # create the dataframe
-    gapminder = pd.DataFrame(data, columns=['Year', attribute, 'Country', 'Quartile', 'GDP'])
-
-    # create and configure the figure
-    fig = px.scatter(gapminder, color='Quartile', hover_name='Country', animation_frame='Year',
-                     x='GDP', y=attribute, color_discrete_sequence=px.colors.qualitative.G10)
-    fig.layout.updatemenus[0].buttons[0].args[1]["frame"]["duration"] = 1500
-    fig.update_layout(title=f'{attribute} from {start} to {end}')
-
-    # make sure that all points over 4 years can be captured in the xy-plane
     x_delta = (max_x - min_x) * 0.1
     y_delta = (max_y - min_y) * 0.1
     fig.update_xaxes(range=[min_x - x_delta, max_x + x_delta])
