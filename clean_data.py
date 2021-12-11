@@ -283,8 +283,8 @@ def clean_data() -> dict[str, Country]:
     country_dict = populate_dictionary()[0]
     # get required attributes from csv files
     get_national_gdp(country_dict)
-    get_gdp_quartile(country_dict, 2016, 2020)
     get_sector_gdp(country_dict)
     get_unemployment(country_dict)
+    get_gdp_quartile(country_dict, 2016, 2020)
     # return cleaned data
     return country_dict

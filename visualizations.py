@@ -263,6 +263,7 @@ def visualize_aggregates(start: int, end: int) -> None:
     >>> visualize_aggregates(2016, 2020)
     """
     sectors = ['Manufacturing', 'Service', 'Industry', 'Agriculture']
+    quartiles = ['Lower', 'Lower-Middle', 'Upper-Middle', 'High']
     aq_m, aq_s, aq_i, aq_a = {}, {}, {}, {}
 
     # Execute computations
@@ -285,12 +286,12 @@ def visualize_aggregates(start: int, end: int) -> None:
         for quartile in range(1, 5):
             gdp = sum([aq_m[(year, quartile)], aq_s[(year, quartile)], aq_i[(year, quartile)],
                        aq_a[(year, quartile)]])
-            aq_percentages = [aq_m[(year, quartile)] / gdp,
-                              aq_s[(year, quartile)] / gdp,
-                              aq_i[(year, quartile)] / gdp,
-                              aq_a[(year, quartile)] / gdp]
+            aq_percentages = [aq_m[(year, quartile)] / gdp * 100,
+                              aq_s[(year, quartile)] / gdp * 100,
+                              aq_i[(year, quartile)] / gdp * 100,
+                              aq_a[(year, quartile)] / gdp * 100]
             fig.add_trace(go.Bar(x=sectors, y=aq_percentages,
-                                 name=str(year) + ' Quartile ' + str(quartile),
+                                 name=str(year) + ' ' + quartiles[quartile - 1] + ' GDP',
                                  visible=(year == start)))
 
     # Slider for changing the year
