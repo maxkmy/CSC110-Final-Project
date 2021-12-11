@@ -24,8 +24,9 @@ def choropleth_percentage_change_slide(root: str, start: int, end: int):
     >>> choropleth_percentage_change_slide('unemployment_', 2016, 2020)
     """
     countries, codes = clean_data.populate_dictionary()
-    # Qatar is an outlier which prevents proper colour differences from being displayed
-    # Qatar has extremely high unemployement rate % change after COVID-19
+    # Qatar and Vietnam are outliers which prevents proper colour differences from being displayed
+    # Qatar and Vietnam has extremely high unemployement rate % change after COVID-19
+
     if root == 'unemployment_':
         countries.pop('Qatar')
         countries.pop('Vietnam')
