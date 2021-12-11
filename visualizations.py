@@ -80,7 +80,7 @@ def choropleth_percent_difference_wholegdp(start: int, end: int):
     # create and configure the figure
     fig = go.Figure()
 
-    fig.update_layout(title=f'GDP as a % Global GDP Difference between {start + 1} and {end}')
+    fig.update_layout(title=f'GDP as a % Global GDP Difference between {start} and {end}')
 
     fig.add_trace(go.Choropleth(
         locations=df['Country Code'],
