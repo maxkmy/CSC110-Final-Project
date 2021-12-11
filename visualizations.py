@@ -37,9 +37,9 @@ def choropleth_percentage_change_slide(root: str, start: int, end: int):
         for i in range(end - start):
             list.append(data_so_far, (codes[country], 2016 + i + 1, ordered_data[i][1], countries[country].name))
 
-    gapminder = pd.DataFrame(data_so_far, columns=['Country Code', 'Year', 'Data', 'Country Name'])
+    gapminder = pd.DataFrame(data_so_far, columns=['Country Code', 'Year', 'Percent Change %', 'Country Name'])
 
-    fig = px.choropleth(gapminder, locations='Country Code', color='Data', hover_name='Country Name',
+    fig = px.choropleth(gapminder, locations='Country Code', color='Percent Change %', hover_name='Country Name',
                         animation_frame='Year', color_continuous_scale=px.colors.sequential.RdBu,
                         projection='natural earth')
     fig.update_layout(title=f'{yaxis_title} Percent Change of Countries Through Years ({start}-{end})')
@@ -71,10 +71,10 @@ def choropleth_percent_wholegdp_slider(start: int, end: int) -> None:
                 data_so_far.append((codes[country], year, data[year - start][country], country))
 
     # create the dataframe
-    gapminder = pd.DataFrame(data_so_far, columns=['Country Code', 'Year', 'Data', 'Country Name'])
+    gapminder = pd.DataFrame(data_so_far, columns=['Country Code', 'Year', 'Percent %', 'Country Name'])
 
     # create and configure the figure
-    fig = px.choropleth(gapminder, locations='Country Code', color='Data', hover_name='Country Name',
+    fig = px.choropleth(gapminder, locations='Country Code', color='Percent %', hover_name='Country Name',
                         animation_frame='Year', range_color=[0, 3], color_continuous_scale=px.colors.sequential.Agsunset,
                         projection='natural earth')
     fig.update_layout(title=f'Global GDP Percentage of Countries Throughout Years ({start}-{end})')
@@ -112,7 +112,7 @@ def choropleth_percent_difference_wholegdp(start: str, end: str):
     yaxis_title = ' '.join(yaxis_title)
 
     # create the dataframe
-    df = pd.DataFrame(data_so_far, columns=['Country Code', 'Change', 'Country Name'])
+    df = pd.DataFrame(data_so_far, columns=['Country Code', 'Percent Difference %', 'Country Name'])
 
     # create and configure the figure
     fig = go.Figure()
@@ -121,7 +121,7 @@ def choropleth_percent_difference_wholegdp(start: str, end: str):
 
     fig.add_trace(go.Choropleth(
         locations=df['Country Code'],
-        z=df['Change'],
+        z=df['Percent Difference %'],
         text=df['Country Name'],
         colorscale='RdBu',
         autocolorscale=False,
