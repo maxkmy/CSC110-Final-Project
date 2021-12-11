@@ -3,5 +3,5 @@
 Plotly == 5.4.0
 pandas == 1.3.4
 
-# Libaries without version
+# Libraries without version
 python-ta
