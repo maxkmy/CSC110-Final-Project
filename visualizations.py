@@ -118,7 +118,7 @@ def plot_percentage_change_cluster_slider(root: str, start: int, end: int) -> No
     >>> plot_percentage_change_cluster_slider('gdp_', 2016, 2020)
     """
     country_dict = clean_data.clean_data()
-    # Qatar and Vietnam are outliers which prevents proper colour differences from being displayed
+    # Qatar and Vietnam are outliers which affects the scaling of y-axes
     # Qatar and Vietnam has extremely high unemployement rate % change after COVID-19
     if root == 'unemployment_':
         country_dict.pop('Qatar')
