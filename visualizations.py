@@ -75,7 +75,8 @@ def choropleth_percent_wholegdp_slider(start: int, end: int) -> None:
 
     # create and configure the figure
     fig = px.choropleth(gapminder, locations='Country Code', color='Percent %', hover_name='Country Name',
-                        animation_frame='Year', range_color=[0, 3], color_continuous_scale=px.colors.sequential.Agsunset,
+                        animation_frame='Year', range_color=[0, 3], color_continuous_scale=px.colors.sequential.Agsunset[
+                                                                                           ::-1],
                         projection='natural earth')
     fig.update_layout(title=f'Global GDP Percentage of Countries Throughout Years ({start}-{end})')
     fig.layout.updatemenus[0].buttons[0].args[1]["frame"]["duration"] = 1500
