@@ -12,11 +12,11 @@ import visualizations
 def main() -> None:
     """ Creates the visualizations of interest.
     """
-    visualizations.choropleth_percentage_change_slide('gdp_', 2016, 2020)
-    # visualizations.choropleth_percentage_change_slide('unemployment_', 2016, 2020)
-    # visualizations.choropleth_percent_difference_wholegdp(2018, 2020)
-    # visualizations.plot_percentage_change_cluster_slider('gdp_', 2016, 2020)
-    # visualizations.plot_percentage_change_cluster_slider('unemployment_', 2016, 2020)
+    visualizations.map_percentage_change('gdp_', 2016, 2020)
+    # visualizations.map_percentage_change('unemployment_', 2016, 2020)
+    # visualizations.map_percent_difference_gdp(2018, 2020)
+    # visualizations.scatter_percentage_change('gdp_', 2016, 2020)
+    # visualizations.scatter_percentage_change('unemployment_', 2016, 2020)
     # visualizations.visualize_aggregates(2016, 2020)
 
 
