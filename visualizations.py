@@ -32,6 +32,8 @@ def map_percentage_change(root: str, start: int, end: int) -> None:
 
     yaxis_title = [word.capitalize() for word in (root.split('_'))]
     yaxis_title = ' '.join(yaxis_title)
+    if yaxis_title == 'Gdp ':
+        yaxis_title = 'GDP '
 
     data_so_far = []
     for country in countries:
@@ -48,8 +50,8 @@ def map_percentage_change(root: str, start: int, end: int) -> None:
                         hover_name='Country Name', animation_frame='Year',
                         color_continuous_scale=px.colors.sequential.RdBu[::-1],
                         projection='natural earth')
-    fig.update_layout(title=f'{yaxis_title}Percent Change of Countries Through Years \
-    ({start + 1}-{end})')
+    fig.update_layout(title=f'{yaxis_title}Percent Change of Countries between Years {start + 1} '
+                            f'and {end}')
     fig.layout.updatemenus[0].buttons[0].args[1]["frame"]["duration"] = 1500
     fig.show()
 
