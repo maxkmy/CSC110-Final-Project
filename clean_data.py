@@ -339,5 +339,5 @@ if __name__ == '__main__':
         'extra-imports': ['python_ta.contracts', 'csv', 'typing'],
         'max-line-length': 100,
         'max-nested-blocks': 4,
-        'disable': ['R1705', 'C0200']
+        'disable': ['R1705', 'C0200', 'R0902']
     })
