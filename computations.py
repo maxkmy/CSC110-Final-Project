@@ -13,6 +13,10 @@ def get_percent_change(root: str, new_attr_suffix: str, old_attr_suffix: str, co
         float:
     """ Calculates the percent change between the attributes (root + new_attr_suffix) and
     (root + old_attr_suffix).
+
+    Preconditions:
+        - root + new_attr_suffix is an attribute of country
+        - root + old_attr_suffix is an attribute of country
     """
     # retrieve the country instance
     country_dict = clean_data()
@@ -33,6 +37,9 @@ def get_percent_change_over_time(root: str, start: int, end: int, country: str) 
         list[tuple[int, float]]:
     """ Calculates the percentage change of the desired attribute (root) between consecutive years
     ranging from start to end inclusive.
+
+    Preconditions:
+        - 0 <= start < end
     """
     # initialize accumulator
     percentage_changes = []
@@ -50,6 +57,9 @@ def get_percent_change_over_time(root: str, start: int, end: int, country: str) 
 def get_aggregate(attribute: str) -> float:
     """ Calculates the aggregate of the attribute in country_dict where the attribute is available
     (i.e. the attribute is not an empty string).
+
+    Preconditions:
+        - 'attribute' is an attribute of a Country instance
     """
     country_dict = clean_data()
     # initialize accumulator
@@ -68,6 +78,10 @@ def get_aggregate(attribute: str) -> float:
 def get_percent_of_aggregate(aggregate: float, attr: str, country: str) -> float:
     """ Returns the percentage the attribute takes up of the aggregate for a given country.
     If the country does not have the attribute, return float('nan') (Not a number).
+
+    Preconditions:
+        - 'attr' is an attribute of a Country instance
+        - country in clean_data()
     """
     country_dict = clean_data()
     # get the attribute from country's Country instance
@@ -83,6 +97,9 @@ def get_percent_of_whole(attr: str) -> dict[str, float]:
     """ Returns a mapping of the percentage the attribute takes up of the aggregate for all
     countries. If the country does not have the attribute, return float('nan') (Not a number).
     The return type is a dict where a country's name maps to its percentage of whole.
+
+    Preconditions:
+        - 'attr' is an attribute of a Country instance
     """
     country_dict = clean_data()
     # initialize the accumulator
@@ -104,6 +121,9 @@ def get_attribute_by_gdp_quartile(root: str, year: int) -> list[list[tuple[int, 
     """
     Returns a list of 4 lists. Each of the 4 lists contain lists with 2 elements, in the form
     (gdp, attribute) where the attribute is root + year.
+
+    Preconditions:
+        - year >= 0
     """
     country_dict = clean_data()
     cur = [[], [], [], []]
@@ -129,6 +149,11 @@ def get_attribute_by_gdp_quartile(root: str, year: int) -> list[list[tuple[int, 
 def get_aggregate_quartile(root: str, desired_quartile: int, year: int) -> float:
     """ Calculates the sum of the attribute in country_dict where the country is in the desired
     quartile and the attribute is available (i.e. the attribute is not an empty string).
+
+    Preconditions:
+        - year >= 0
+        - desired_quartile in {1, 2, 3, 4}
+        - root + year is an attribute of a Country instance
     """
     country_dict = clean_data()
     # initialize accumulator
@@ -152,6 +177,9 @@ def get_xy_data(ordered_data: list[tuple[int, float]]) -> tuple[list[int], list[
     >>> data = [(2016, 4.5), (2017, 8.8) ,(2018, 12.4) ,(2019, 17.8) ,(2020, 40.2)]
     >>> get_xy_data(data)
     ([2016, 2017, 2018, 2019, 2020], [4.5, 8.8, 12.4, 17.8, 40.2])
+
+    Preconditions:
+        - all(len(data) == 2 for data in ordered_data)
     """
     x_data, y_data = [], []
     for x, y in ordered_data:

@@ -7,7 +7,7 @@ in this file are meant to:
 """
 
 import csv
-from typing import Optional
+from typing import Optional, Any
 
 
 class Country:
@@ -58,55 +58,51 @@ class Country:
 
     Representation Invariants:
         - self.name != ''
-        - (self.gdp_2016 == '' or self.gdp_2016 >= 0) and \
-        (self.gdp_2017 == '' or self.gdp_2017 >= 0) and \
-        (self.gdp_2018 == '' or self.gdp_2018 >= 0) and \
-        (self.gdp_2019 == '' or self.gdp_2019 >= 0) and \
-        (self.gdp_2020 == '' or self.gdp_2020 >= 0)
-        - self.gdp_2016 in {1, 2, 3, 4, None} and self.gdp_2017 in {1, 2, 3, 4, None} and \
-        self.gdp_2018 in {1, 2, 3, 4, None} and self.gdp_2019 in {1, 2, 3, 4, None} and \
-        self.gdp_2020 in {1, 2, 3, 4, None}
+        - gdp attribute is either an empty string or a float >= 0
+        - gdp quartile attribute is either a int in range [0, 4] or None
+        - sector gdp attribute is either an empty string or a float >= 0
+        - unemployment attribute is either a string or a float >= 0
 
     Sample Usage
     >>> Country('Canada')
     Country(name='Canada')
     """
     name: str
-    gdp_2016: Optional[float]
-    gdp_2017: Optional[float]
-    gdp_2018: Optional[float]
-    gdp_2019: Optional[float]
-    gdp_2020: Optional[float]
-    gdp_quartile_2016: Optional[float]
-    gdp_quartile_2017: Optional[float]
-    gdp_quartile_2018: Optional[float]
-    gdp_quartile_2019: Optional[float]
-    gdp_quartile_2020: Optional[float]
-    gdp_manufacturing_2016: Optional[float]
-    gdp_service_2016: Optional[float]
-    gdp_industry_2016: Optional[float]
-    gdp_agriculture_2016: Optional[float]
-    gdp_manufacturing_2017: Optional[float]
-    gdp_service_2017: Optional[float]
-    gdp_industry_2017: Optional[float]
-    gdp_agriculture_2017: Optional[float]
-    gdp_manufacturing_2018: Optional[float]
-    gdp_service_2018: Optional[float]
-    gdp_industry_2018: Optional[float]
-    gdp_agriculture_2018: Optional[float]
-    gdp_manufacturing_2019: Optional[float]
-    gdp_service_2019: Optional[float]
-    gdp_industry_2019: Optional[float]
-    gdp_agriculture_2019: Optional[float]
-    gdp_manufacturing_2020: Optional[float]
-    gdp_service_2020: Optional[float]
-    gdp_industry_2020: Optional[float]
-    gdp_agriculture_2020: Optional[float]
-    unemployment_2016: Optional[float]
-    unemployment_2017: Optional[float]
-    unemployment_2018: Optional[float]
-    unemployment_2019: Optional[float]
-    unemployment_2020: Optional[float]
+    gdp_2016: Optional[Any]
+    gdp_2017: Optional[Any]
+    gdp_2018: Optional[Any]
+    gdp_2019: Optional[Any]
+    gdp_2020: Optional[Any]
+    gdp_quartile_2016: Optional[int]
+    gdp_quartile_2017: Optional[int]
+    gdp_quartile_2018: Optional[int]
+    gdp_quartile_2019: Optional[int]
+    gdp_quartile_2020: Optional[int]
+    gdp_manufacturing_2016: Optional[Any]
+    gdp_service_2016: Optional[Any]
+    gdp_industry_2016: Optional[Any]
+    gdp_agriculture_2016: Optional[Any]
+    gdp_manufacturing_2017: Optional[Any]
+    gdp_service_2017: Optional[Any]
+    gdp_industry_2017: Optional[Any]
+    gdp_agriculture_2017: Optional[Any]
+    gdp_manufacturing_2018: Optional[Any]
+    gdp_service_2018: Optional[Any]
+    gdp_industry_2018: Optional[Any]
+    gdp_agriculture_2018: Optional[Any]
+    gdp_manufacturing_2019: Optional[Any]
+    gdp_service_2019: Optional[Any]
+    gdp_industry_2019: Optional[Any]
+    gdp_agriculture_2019: Optional[Any]
+    gdp_manufacturing_2020: Optional[Any]
+    gdp_service_2020: Optional[Any]
+    gdp_industry_2020: Optional[Any]
+    gdp_agriculture_2020: Optional[Any]
+    unemployment_2016: Optional[Any]
+    unemployment_2017: Optional[Any]
+    unemployment_2018: Optional[Any]
+    unemployment_2019: Optional[Any]
+    unemployment_2020: Optional[Any]
 
     def __init__(self, name: str) -> None:
         self.name = name
@@ -157,6 +153,9 @@ class Country:
 def populate_dictionary() -> tuple[dict[str, Country], dict[str, str]]:
     """ Return a tuple of dictionary. The first dictionary maps the country code to a country name
     and the second dictionary maps the country name to a Country instance.
+
+    Preconditions:
+        - raw_data/national_gdp.csv file is in the correct format
     """
     # initialize accumulators
     country_dict = {}
