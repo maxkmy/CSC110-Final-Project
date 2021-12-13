@@ -12,12 +12,12 @@ import visualizations
 def main() -> None:
     """ Creates the visualizations of interest.
     """
-    visualizations.map_percentage_change('gdp_', 2016, 2020)
-    # visualizations.map_percentage_change('unemployment_', 2016, 2020)
-    # visualizations.map_percent_difference_gdp(2018, 2020)
-    # visualizations.scatter_percentage_change('gdp_', 2016, 2020)
-    # visualizations.scatter_percentage_change('unemployment_', 2016, 2020)
+    visualizations.scatter_percentage_change('gdp_', 2016, 2020)
+    # visualizations.map_percentage_change('gdp_', 2016, 2020)
     # visualizations.visualize_aggregates(2016, 2020)
+    # visualizations.map_percent_difference_gdp(2018, 2020)
+    # visualizations.scatter_percentage_change('unemployment_', 2016, 2020)
+    # visualizations.map_percentage_change('unemployment_', 2016, 2020)
 
 
 if __name__ == "__main__":
