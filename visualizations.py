@@ -239,14 +239,16 @@ def visualize_aggregates(start: int, end: int) -> None:
 if __name__ == '__main__':
     import python_ta
     import python_ta.contracts
+    import doctest
 
     python_ta.contracts.DEBUG_CONTRACTS = False
     python_ta.contracts.check_all_contracts()
+    doctest.testmod()
 
     python_ta.check_all(config={
         'allowed-io': [],
         'extra-imports': ['plotly.graph_objects', 'plotly.express', 'pandas', 'clean_data',
-                          'computations'],
+                          'computations', 'doctest'],
         'max-line-length': 100,
         'max-nested-blocks': 4,
         'disable': ['R1705', 'C0200']

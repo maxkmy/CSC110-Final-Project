@@ -65,7 +65,6 @@ class Country:
 
     Sample Usage
     >>> Country('Canada')
-    Country(name='Canada')
     """
     name: str
     gdp_2016: Optional[Any]
@@ -145,9 +144,6 @@ class Country:
         self.unemployment_2018 = None
         self.unemployment_2019 = None
         self.unemployment_2020 = None
-
-    def __str__(self) -> str:
-        return self.name
 
 
 def populate_dictionary() -> tuple[dict[str, Country], dict[str, str]]:
@@ -330,13 +326,15 @@ def clean_data() -> dict[str, Country]:
 if __name__ == '__main__':
     import python_ta
     import python_ta.contracts
+    import doctest
 
     python_ta.contracts.DEBUG_CONTRACTS = False
     python_ta.contracts.check_all_contracts()
+    doctest.testmod()
 
     python_ta.check_all(config={
         'allowed-io': ['populate_dictionary', 'populate_attribute_name'],
-        'extra-imports': ['python_ta.contracts', 'csv', 'typing'],
+        'extra-imports': ['python_ta.contracts', 'csv', 'typing', 'doctest'],
         'max-line-length': 100,
         'max-nested-blocks': 4,
         'disable': ['R1705', 'C0200', 'R0902']
